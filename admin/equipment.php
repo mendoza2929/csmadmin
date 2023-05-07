@@ -67,6 +67,7 @@ adminLogin();
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Brand</th>
+                                    <th scope="col">Made</th>
                                     <th scope="col">Cost</th>
                                     <th scope="col">Unit</th>
                                     <th scope="col">Stock</th>
@@ -111,7 +112,19 @@ adminLogin();
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Brand</label>
-                                <input type="text" min="1" name="brand" class="form-control shadow-none">
+                                <input type="text" name="brand" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Made In</label>
+                                <select class='form-select shadow-none' aria-label='Default select example' name='made' required>
+                                                <option disabled selected value="">Select a Made...</option> <!-- placeholder option -->
+                                                <?php
+                                                $res = selectAll('made');
+                                                while($opt = mysqli_fetch_assoc($res)){
+                                                    echo "<option value='$opt[name]'>$opt[name]</option>";
+                                                }
+                                                ?>
+                                            </select>
                             </div>
                             <div class="col-3 mb-3">
                                 <label class="form-label fw-bold">Unit</label>
@@ -171,6 +184,18 @@ adminLogin();
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Brand</label>
                                 <input type="text" min="1" name="brand" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Made In</label>
+                                <select class='form-select shadow-none' aria-label='Default select example' name='made' required>
+                                                <option disabled selected value="">Select a Made...</option> <!-- placeholder option -->
+                                                <?php
+                                                $res = selectAll('made');
+                                                while($opt = mysqli_fetch_assoc($res)){
+                                                    echo "<option value='$opt[name]'>$opt[name]</option>";
+                                                }
+                                                ?>
+                                            </select>
                             </div>
                             <div class="col-3 mb-3">
                                 <label class="form-label fw-bold">Unit</label>
@@ -251,6 +276,7 @@ function add_equipment() {
     data.append('add_equipment', '');
     data.append('name', add_equipment_form.elements['name'].value);
     data.append('brand', add_equipment_form.elements['brand'].value);
+    data.append('made', add_equipment_form.elements['made'].value);
     data.append('unit', add_equipment_form.elements['unit'].value);
     data.append('quantity', add_equipment_form.elements['quantity'].value);
     data.append('cost', add_equipment_form.elements['cost'].value);
@@ -323,6 +349,7 @@ function equipment_details(id) {
         let data = JSON.parse(this.responseText);
         edit_equipment.elements['name'].value = data.equipmentdata.name;
         edit_equipment.elements['brand'].value = data.equipmentdata.brand;
+        edit_equipment.elements['made'].value = data.equipmentdata.made;
         edit_equipment.elements['unit'].value = data.equipmentdata.unit;
         edit_equipment.elements['quantity'].value = data.equipmentdata.quantity;
         edit_equipment.elements['cost'].value = data.equipmentdata.cost;
@@ -350,6 +377,7 @@ edit_equipment.addEventListener('submit', function (e) {
             data.append('equipment_id', edit_equipment.elements['equipment_id'].value);
             data.append('name', edit_equipment.elements['name'].value);
             data.append('brand', edit_equipment.elements['brand'].value);
+            data.append('made', edit_equipment.elements['made'].value);
             data.append('unit', edit_equipment.elements['unit'].value);
             data.append('quantity', edit_equipment.elements['quantity'].value);
             data.append('cost', edit_equipment.elements['cost'].value);

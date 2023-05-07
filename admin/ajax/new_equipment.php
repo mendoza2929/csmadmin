@@ -40,7 +40,7 @@ if(isset($_POST['get_bookings_equipment'])){
                 Student ID: $data[email]
             </span>
             <br>
-            <b>Name: </b> $data[username]
+            <b>Representative: </b> $data[username]
             <br>
             <b>Course: </b> $data[course]
             <br>
@@ -56,13 +56,11 @@ if(isset($_POST['get_bookings_equipment'])){
             <b>Item: </b> $data[equipment_name]
             <br>
             <b>Quantity: </b> $data[quantity] pcs
-            <br>
-            <b>Volume: </b> $data[volume] Needed
             </td>
             <td>
-                <b>Start Date: </b> $checkin
+                <b>Start Class: </b> $checkin
                 <br>
-                <b>End Date: </b> $checkout
+                <b>End Class: </b> $checkout
                 <br>
                 <b>Date: </b> $date
             </td>
@@ -117,6 +115,8 @@ if(isset($_POST['quantity_equipment'])){
   $frm_data = filteration($_POST);
 
   $breakage_qty = $frm_data['quantity_no'];
+  $res_group = $frm_data['res_group'];
+  $res_breakage = $frm_data['res_breakage'];
   $room_id = $_SESSION['equipment']['id'];
   
   // Update the quantity of the room in the `rooms` table based on the breakage:
@@ -126,9 +126,9 @@ if(isset($_POST['quantity_equipment'])){
   
   // Update the `quantity_no` field in the `booking_details` table for the booking that had the breakage:
   $booking_id = $frm_data['booking_id'];
-  $update_query = "UPDATE `equipment_details_final` SET `quantity_no` = ? WHERE `booking_id` = ?";
-  $update_values = [$breakage_qty, $booking_id];
-  $res = update($update_query, $update_values, 'ii');
+  $update_query = "UPDATE `equipment_details_final` SET `quantity_no` = ? , `res_breakage` = ?  , `res_group` = ? WHERE `booking_id` = ?";
+  $update_values = [$breakage_qty, $res_breakage, $res_group, $booking_id];
+  $res = update($update_query, $update_values, 'issi');
   
   // Check if the remaining quantity of the room is zero and update the status of the room in the `rooms` table:
   $select_query = "SELECT `quantity` FROM `equipment` WHERE `id` = ?";

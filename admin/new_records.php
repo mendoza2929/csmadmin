@@ -50,7 +50,7 @@ adminLogin();
          <div class="card-body mb-4">
 
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h5 class="card-title m-0 fw-bold"> Unit</h5>
+                            <h5 class="card-title m-0 fw-bold"> Apparatus Unit</h5>
                             <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#facilities">
                             <i class="bi bi-file-plus"></i> Add
                             </button>
@@ -67,6 +67,72 @@ adminLogin();
                                 </tr>
                             </thead>
                             <tbody id="facilities_data">
+                          
+                             
+                           
+                            </tbody>
+                            </table>
+                            </div>
+
+
+                       
+         </div>
+         </div>
+
+         <div class="card border-0 shadow-sm mb-4">
+         <div class="card-body mb-4">
+
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="card-title m-0 fw-bold"> Chemical Unit</h5>
+                            <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#chemical">
+                            <i class="bi bi-file-plus"></i> Add
+                            </button>
+                        </div>
+
+
+                           <div class="table-responsive-md" style="height:450px; overflow-y:scroll;">
+                           <table class="table table-hover border">
+                            <thead>
+                                <tr class="text-white"  style="background-color:#ED8B5A;">
+                                <th scope="col">#</th>
+                                <th scope="col"width="65%">Name</th>
+                                <th scope="col"  width="15%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="chemical_data">
+                          
+                             
+                           
+                            </tbody>
+                            </table>
+                            </div>
+
+
+                       
+         </div>
+         </div>
+         
+         <div class="card border-0 shadow-sm mb-4">
+         <div class="card-body mb-4">
+
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="card-title m-0 fw-bold"> Made Products</h5>
+                            <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#made">
+                            <i class="bi bi-file-plus"></i> Add
+                            </button>
+                        </div>
+
+
+                           <div class="table-responsive-md" style="height:450px; overflow-y:scroll;">
+                           <table class="table table-hover border">
+                            <thead>
+                                <tr class="text-white"  style="background-color:#ED8B5A;">
+                                <th scope="col">#</th>
+                                <th scope="col"width="65%">Name</th>
+                                <th scope="col"  width="15%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="made_data">
                           
                              
                            
@@ -153,7 +219,7 @@ adminLogin();
                 <form id="facilities_form">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <div class="modal-title"><i class="bi bi-bell"></i> Add Size</div>
+                            <div class="modal-title"><i class="bi bi-bell"></i> Add Apparatus Unit</div>
                         </div>
                         <div class="modal-body"> 
                             <div class="mb-3">
@@ -169,6 +235,51 @@ adminLogin();
                 </form>
             </div>
         </div>
+
+        <div class="modal fade" id="chemical" data-bs-backdrop="static" data-bs-keyboard= "true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="chemical_form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="modal-title"><i class="bi bi-bell"></i> Add Chemical Unit</div>
+                        </div>
+                        <div class="modal-body"> 
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name</label>
+                                <input type="text" id="chemical_name" class="form-control shadow-none">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success shadow-none">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal fade" id="made" data-bs-backdrop="static" data-bs-keyboard= "true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="made_form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="modal-title"><i class="bi bi-bell"></i> Add Made</div>
+                        </div>
+                        <div class="modal-body"> 
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name</label>
+                                <input type="text" id="made_name" class="form-control shadow-none">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success shadow-none">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
 
            <!---- Features Modal-->
 
@@ -187,11 +298,15 @@ adminLogin();
                             <div class="mb-3">
                                 
                 <label class="form-label mb-3"> Select Department
-                <select class='form-select shadow-none' aria-label='Default select example' name="features_desc" required>
-                    <option disabled selected value="">Select Department...</option> <!-- placeholder option -->
-                    <option value="biology">Biology</option>
-                    <option value="chemistry">Chemistry</option>
-                </select>
+                <select class='form-select shadow-none' aria-label='Default select example' name='features_desc' required>
+                                <option disabled selected value="">Select a Department...</option> <!-- placeholder option -->
+                                <?php
+                                $res = selectAll('course');
+                                while($opt = mysqli_fetch_assoc($res)){
+                                    echo "<option value='$opt[name]'>$opt[name]</option>";
+                                }
+                                ?>
+                            </select>
             </label>
                                 
 
@@ -264,7 +379,9 @@ adminLogin();
    <script>
 
 
-let facilities_form = document.getElementById('facilities_form');
+    let facilities_form = document.getElementById('facilities_form');
+    let chemical_form = document.getElementById('chemical_form');
+    let made_form = document.getElementById('made_form');
     let features_form = document.getElementById('features_form');
     let course_form = document.getElementById('course_form');
 
@@ -289,7 +406,7 @@ let facilities_form = document.getElementById('facilities_form');
             if(this.responseText==1){
                 Swal.fire(
                 'Good job!',
-                'New Size or Volume Added',
+                'New Appratues Unit',
                 'success'
                 )
 
@@ -330,30 +447,197 @@ let facilities_form = document.getElementById('facilities_form');
             if(this.responseText==1){
                 Swal.fire(
                 'Good job!',
-                'Size and Volume Removed Successfully',
+                'Appartus Unit Removed',
                 'success'
                 )
                 get_facilities();
-            }
-            else if(this.responseText== 'room_added'){
-                Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'A Size and Volume Removed  is added to the stock item.',
-                })
-                
             }
             else{
                 Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'A Size and Volume Removed  is added to the stock item.',
+                text: 'Server Down.',
                 })
             }
         }
 
         xhr.send('rem_facilities='+val);
     }
+
+
+
+
+  chemical_form.addEventListener('submit', function(e){
+        e.preventDefault();
+        add_chemical();
+    });
+
+    function add_chemical(){
+        let data= new FormData();
+        data.append('name',chemical_form.elements['chemical_name'].value);
+        data.append('add_chemical','');
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+
+        xhr.onload = function(){
+            var myModalEl = document.getElementById('chemical')
+            var modal = bootstrap.Modal.getInstance(myModalEl) // Returns a Bootstrap modal instanceof
+            modal.hide();
+
+            if(this.responseText==1){
+                Swal.fire(
+                'Good job!',
+                'New Chemical Unit',
+                'success'
+                )
+
+                chemical_form.elements['chemical_name'].values='';
+                get_chemical();
+            }else{
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                
+                })
+            }
+
+        }
+        xhr.send(data);
+    }
+
+    function get_chemical(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        
+        xhr.onload = function (){
+            document.getElementById('chemical_data').innerHTML = this.responseText;
+        }
+
+        xhr.send('get_chemical');
+    } 
+
+    
+    function rem_chemical(val){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+ 
+        xhr.onload = function (){
+            if(this.responseText==1){
+                Swal.fire(
+                'Good job!',
+                'Chemical Unit Removed',
+                'success'
+                )
+                get_chemical();
+            }
+            else{
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Server Down.',
+                })
+            }
+        }
+
+        xhr.send('rem_chemical='+val);
+    }
+
+
+
+
+
+
+
+
+
+    made_form.addEventListener('submit', function(e){
+        e.preventDefault();
+        add_made();
+    });
+
+    function add_made(){
+        let data= new FormData();
+        data.append('name',made_form.elements['made_name'].value);
+        data.append('add_made','');
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+
+        xhr.onload = function(){
+            var myModalEl = document.getElementById('made')
+            var modal = bootstrap.Modal.getInstance(myModalEl) // Returns a Bootstrap modal instanceof
+            modal.hide();
+
+            if(this.responseText==1){
+                Swal.fire(
+                'Good job!',
+                'New Made Added',
+                'success'
+                )
+
+                made_form.elements['made_name'].values='';
+                get_made();
+            }else{
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                
+                })
+            }
+
+        }
+        xhr.send(data);
+    }
+
+
+    function get_made(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        
+        xhr.onload = function (){
+            document.getElementById('made_data').innerHTML = this.responseText;
+        }
+
+        xhr.send('get_made');
+    } 
+
+    function rem_made(val){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+ 
+        xhr.onload = function (){
+            if(this.responseText==1){
+                Swal.fire(
+                'Good job!',
+                'Made Removed Successfully',
+                'success'
+                )
+                get_made();
+            }
+
+            else{
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Server Down',
+                })
+            }
+        }
+
+        xhr.send('rem_made='+val);
+    }
+
+
+
+
+
 
 
 
@@ -550,8 +834,10 @@ let facilities_form = document.getElementById('facilities_form');
 
     window.onload = function(){
         get_facilities();
+        get_chemical();
         get_features();
         get_course();
+        get_made();
     }
     
 

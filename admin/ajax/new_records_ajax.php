@@ -56,6 +56,98 @@ if(isset($_POST['rem_facilities'])){
 }
 
 
+if(isset($_POST['add_chemical'])){
+    $frm_data = filteration($_POST);
+
+    $q = "INSERT INTO `chemical_unit`(`name`) VALUES (?)";
+    $values=[$frm_data['name']];
+    $res=insert($q,$values,'s');
+    echo $res;
+
+}
+
+if(isset($_POST['get_chemical'])){
+    $res = selectAll('chemical_unit');
+    $i=1;
+
+    while($row = mysqli_fetch_assoc($res)){
+        echo <<<data
+        <tr>
+        <td>$i</td>
+        <td>$row[name]</td>
+        <td>
+         <button type="button" onclick="rem_chemical($row[id])" class="btn btn-danger btn-sm shadow-none">
+         <i class="bi bi-trash"></i>Delete
+        </button>
+        </td>
+        </tr>
+        data;
+        $i++;
+    }
+}
+
+
+
+if(isset($_POST['rem_chemical'])){
+    $frm_data = filteration($_POST);
+    $values = [$frm_data['rem_chemical']];
+
+ 
+    $q = "DELETE FROM `chemical_unit` WHERE `id`=?";
+    $res = delete($q, $values,'i');
+    echo $res;
+}
+
+
+
+
+
+
+
+
+
+if(isset($_POST['add_made'])){
+    $frm_data = filteration($_POST);
+
+    $q = "INSERT INTO `made`(`name`) VALUES (?)";
+    $values=[$frm_data['name']];
+    $res=insert($q,$values,'s');
+    echo $res;
+
+}
+
+if(isset($_POST['get_made'])){
+    $res = selectAll('made');
+    $i=1;
+
+    while($row = mysqli_fetch_assoc($res)){
+        echo <<<data
+        <tr>
+        <td>$i</td>
+        <td>$row[name]</td>
+        <td>
+         <button type="button" onclick="rem_made($row[id])" class="btn btn-danger btn-sm shadow-none">
+         <i class="bi bi-trash"></i>Delete
+        </button>
+        </td>
+        </tr>
+        data;
+        $i++;
+    }
+}
+
+if(isset($_POST['rem_made'])){
+    $frm_data = filteration($_POST);
+    $values = [$frm_data['rem_made']];
+
+ 
+    $q = "DELETE FROM `made` WHERE `id`=?";
+    $res = delete($q, $values,'i');
+    echo $res;
+}
+
+
+
 
 if(isset($_POST['add_features'])){
     $frm_data = filteration($_POST);

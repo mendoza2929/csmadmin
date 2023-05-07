@@ -14,11 +14,11 @@ if(isset($_POST['add_equipment'])){
     $frm_data = filteration($_POST);
     $flag = 0;
 
-    $q1 = "INSERT INTO `equipment`(`name`, `brand`,`unit`,`quantity`,`cost`,`date_added`) VALUES (?,?,?,?,?,?)";
-    $values = [$frm_data['name'],$frm_data['brand'],$frm_data['unit'],$frm_data['quantity'],$frm_data['cost'],$frm_data['date_added']];
+    $q1 = "INSERT INTO `equipment`(`name`, `brand`,`made`,`unit`,`quantity`,`cost`,`date_added`) VALUES (?,?,?,?,?,?,?)";
+    $values = [$frm_data['name'],$frm_data['brand'],$frm_data['made'],$frm_data['unit'],$frm_data['quantity'],$frm_data['cost'],$frm_data['date_added']];
 
 
-    if(insert($q1,$values,'sssiis')){
+    if(insert($q1,$values,'ssssiis')){
         $flag=1;
     }
 
@@ -54,8 +54,9 @@ if(isset($_POST['get_equipment'])){
         $data.= "
             <tr class='align-middle'>
                 <td>$i</td>
-                <td>$row[name]</td>
+                <td><b>$row[name]</b></td>
                 <td><span class='badge rounded-pill bg-light text-dark'>$row[brand]</span></td>
+                <td><span class='badge rounded-pill bg-light text-dark'>$row[made]</span></td>
                 <td>$row[cost]</td>
                 <td>$row[unit]</td>
                 <td>$row[quantity]</td>
@@ -112,11 +113,11 @@ if (isset($_POST['submit_edit_equipment'])) {
 
     $flag = 0;
 
-    $q1 = "UPDATE `equipment` SET `name`=?, `brand`=?,  `unit`=?,`quantity`=?, `cost`=?, `date_added`=? WHERE `id`=?";
-    $values = [$frm_data['name'], $frm_data['brand'], $frm_data['unit'], $frm_data['quantity'], $frm_data['cost'], $frm_data['date_added'], $frm_data['equipment_id']];
+    $q1 = "UPDATE `equipment` SET `name`=?, `brand`=?, `made`=?, `unit`=?,`quantity`=?, `cost`=?, `date_added`=? WHERE `id`=?";
+    $values = [$frm_data['name'], $frm_data['brand'], $frm_data['made'] , $frm_data['unit'], $frm_data['quantity'], $frm_data['cost'], $frm_data['date_added'], $frm_data['equipment_id']];
 
   
-    if(update($q1,$values,'sssiisi')){
+    if(update($q1,$values,'ssssiisi')){
         $flag =1;
     }
     
@@ -170,8 +171,9 @@ if (isset($_POST['search_equipment'])) {
         $data .= "
         <tr class='align-middle'>
                 <td>$i</td>
-                <td>$row[name]</td>
+                <td><b>$row[name]</b></td>
                 <td><span class='badge rounded-pill bg-light text-dark'>$row[brand]</span></td>
+                <td><span class='badge rounded-pill bg-light text-dark'>$row[made]</span></td>
                 <td>$row[cost]</td>
                 <td>$row[unit]</td>
                 <td>$row[quantity]</td>

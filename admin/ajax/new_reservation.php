@@ -27,9 +27,9 @@ if(isset($_POST['get_bookings'])){
 
       $date = date('F j Y',strtotime($data['datentime']));
         
-        $checkin= date("d-m-Y g:i a",strtotime($data['check_in']));
+        $checkin= date("F j Y g:i a",strtotime($data['check_in']));
                     
-        $checkout= date("d-m-Y g:i a",strtotime($data['check_out']));
+        $checkout= date("F j Y g:i a",strtotime($data['check_out']));
 
         $table_data .="
         
@@ -40,7 +40,7 @@ if(isset($_POST['get_bookings'])){
                 Student ID: $data[email]
             </span>
             <br>
-            <b>Name: </b> $data[user_name]
+            <b>Representive: </b> $data[user_name]
             <br>
             <b>Course: </b> $data[course]
             <br>
@@ -56,13 +56,11 @@ if(isset($_POST['get_bookings'])){
             <b>Item: </b> $data[room_name]
             <br>
             <b>Quantity: </b> $data[quantity] pcs
-            <br>
-            <b>Volume: </b> $data[volume] Needed
             </td>
             <td>
-                <b>Start Date: </b> $checkin
+                <b>Start Class: </b> $checkin
                 <br>
-                <b>End Date: </b> $checkout
+                <b>End Class: </b> $checkout
                 <br>
                 <b>Date: </b> $date
             </td>
@@ -109,13 +107,14 @@ echo ($res==2) ? 1 : 0;  //it will update 2 rows so it will return 2
 
 
 
-
 if(isset($_POST['quantity_room'])){
 
 
   $frm_data = filteration($_POST);
 
   $breakage_qty = $frm_data['quantity_no'];
+  $res_group = $frm_data['res_group'];
+  $res_breakage = $frm_data['res_breakage'];
   $room_id = $_SESSION['room']['id'];
   
   // Update the quantity of the room in the `rooms` table based on the breakage:
@@ -123,11 +122,11 @@ if(isset($_POST['quantity_room'])){
   $update_values = [$breakage_qty, $room_id];
   $res = update($update_query, $update_values, 'ii');
   
-  // Update the `quantity_no` field in the `booking_details` table for the booking that had the breakage:
+  // Update the `quantity_no` and `res_breakage` fields in the `booking_details` table for the booking that had the breakage:
   $booking_id = $frm_data['booking_id'];
-  $update_query = "UPDATE `booking_details` SET `quantity_no` = ? WHERE `booking_id` = ?";
-  $update_values = [$breakage_qty, $booking_id];
-  $res = update($update_query, $update_values, 'ii');
+  $update_query = "UPDATE `booking_details` SET `quantity_no` = ? , `res_breakage` = ?  , `res_group` = ? WHERE `booking_id` = ?";
+  $update_values = [$breakage_qty, $res_breakage, $res_group, $booking_id];
+  $res = update($update_query, $update_values, 'issi');
   
   // Check if the remaining quantity of the room is zero and update the status of the room in the `rooms` table:
   $select_query = "SELECT `quantity` FROM `rooms` WHERE `id` = ?";
@@ -148,14 +147,9 @@ if(isset($_POST['quantity_room'])){
   
   echo ($res == 1) ? 1 : 0;
   
-
-
-
-
  
 
 }
-
 
 
 ?>

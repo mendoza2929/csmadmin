@@ -62,6 +62,8 @@ adminLogin();
                                 <th scope="col">#</th>
                                 <th scope="col">User Details</th>
                                 <th scope="col">Item Details</th>
+                                <th scope="col">Group Mate</th>
+                                <th scope="col">Responsible For Breakage</th>
                                 <input type="hidden" name="booking_id">
                                 <th scope="col">Action</th> 
                                 </tr>

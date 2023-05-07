@@ -82,6 +82,7 @@ if(isset($_POST['get_clearance'])){
 echo $data;
 }
 
+
 if(isset($_POST['edit_clearance'])){
 $frm_data = filteration($_POST);
 

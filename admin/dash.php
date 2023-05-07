@@ -70,11 +70,11 @@ $equipment_breakage = mysqli_fetch_assoc(mysqli_query($con,"SELECT COUNT(booking
 
                <div class="d-flex align-items-center justify-content-between mb-3">
             <h5></h5>
-            <select class="form-select shadow-none bg-light w-auto" onchange="booking_analytics(this.value)">
+            <!--<select class="form-select shadow-none bg-light w-auto" onchange="booking_analytics(this.value)">
               <option value="1">1st Sem</option>
               <option value="2">2nd Sem</option>
               <option value="4">All Time</option>
-            </select>
+            </select>-->
           </div>
          </div>
 

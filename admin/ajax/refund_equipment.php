@@ -10,9 +10,9 @@ if(isset($_POST['get_equipment'])){
 
     $frm_data = filteration($_POST);
     
-    $query = "SELECT eo.*, ed.*  FROM `equipment_order_final` eo INNER JOIN `equipment_details_final` ed ON eo.booking_id = ed.booking_id WHERE (eo.order_id LIKE ? OR ed.course LIKE ? OR ed.username LIKE ? ) AND  (eo.booking_status =?  AND eo.refund=?) ORDER BY eo.booking_id DESC ";
+    $query = "SELECT eo.*, ed.*  FROM `equipment_order_final` eo INNER JOIN `equipment_details_final` ed ON eo.booking_id = ed.booking_id WHERE (eo.order_id LIKE ? OR ed.course LIKE ? OR ed.username LIKE ? OR ed.res_breakage LIKE ? ) AND  (eo.booking_status =?  AND eo.refund=?) ORDER BY eo.booking_id DESC ";
 
-    $res = select($query,["%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%","breakage",0],'sssss');
+    $res = select($query,["%$frm_data[search]%", "%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%","breakage",0],'ssssss');
 
     $i=1;
 
@@ -25,11 +25,12 @@ if(isset($_POST['get_equipment'])){
 
     while($data = mysqli_fetch_array($res)){
 
-        $date = date("d-m-Y",strtotime($data['datentime']));
+      $date = date('F j Y',strtotime($data['datentime']));
         
-        $checkin= date("d-m-Y g:i a",strtotime($data['check_in']));
-                    
-        $checkout= date("d-m-Y g:i a",strtotime($data['check_out']));
+      $checkin= date("F j Y g:i a",strtotime($data['check_in']));
+                  
+      $checkout= date("F j Y g:i a",strtotime($data['check_out']));
+
 
         $table_data .="
         
@@ -40,7 +41,7 @@ if(isset($_POST['get_equipment'])){
                 Student ID: $data[email]
             </span>
             <br>
-            <b>Name: </b> $data[username]
+            <b>Representative: </b> $data[username]
             <br>
             <b>Course: </b> $data[course]
             <br>
@@ -54,11 +55,17 @@ if(isset($_POST['get_equipment'])){
                 <br>
                 <b>Remarks: </b> $data[quantity_no] pcs
                 <br>
-                <b>Check in: </b> $checkin
+                <b>Start Class: </b> $checkin
                 <br>
-                <b>Check out: </b> $checkout
+                <b>End Class: </b> $checkout
                 <br>
                 <b>Date: </b> $date
+            </td>
+            <td>
+            <b>$data[res_group]</b>
+            </td>
+            <td>
+            <b>$data[res_breakage]</b>
             </td>
             
          

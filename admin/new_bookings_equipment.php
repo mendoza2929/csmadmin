@@ -123,6 +123,16 @@ adminLogin();
                                 <label class="form-label fw-bold">Breakage Quantity</label>
                                 <input type="text" name="quantity_no" class="form-control shadow-none">
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Group Mate</label>
+                        
+                                <textarea class="form-control shadow-none" name="res_group"   rows="3" style="resize: none;"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Responsible For Breakage</label>
+                        
+                                <textarea class="form-control shadow-none" name="res_breakage"   rows="3" style="resize: none;"></textarea>
+                            </div>
                          <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base ">
                             Note: Check first the Item Quantity
                         </span>
@@ -255,6 +265,8 @@ function get_bookings_equipment(search=''){
     
         let data = new FormData();
         data.append('quantity_no',quantity_equipment_form.elements['quantity_no'].value);
+        data.append('res_group',quantity_equipment_form.elements['res_group'].value);
+        data.append('res_breakage',quantity_equipment_form.elements['res_breakage'].value);
         data.append('booking_id',quantity_equipment_form.elements['booking_id'].value);
         data.append('quantity_equipment','');
     

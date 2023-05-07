@@ -17,7 +17,7 @@ if(isset($_POST['get_bookings_equipment'])){
 
     
   
-    $query = "SELECT eo.*, ed.*  FROM `equipment_order_final` eo INNER JOIN `equipment_details_final` ed ON eo.booking_id = ed.booking_id WHERE  ( (eo.booking_status ='approved'  AND eo.arrival=1) OR (eo.booking_status='breakage' AND eo.arrival=0) OR (eo.booking_status='payment failed')) AND   (eo.order_id LIKE ? OR ed.course LIKE ? OR ed.username LIKE ? )  ORDER BY eo.booking_id DESC ";
+    $query = "SELECT eo.*, ed.*  FROM `equipment_order_final` eo INNER JOIN `equipment_details_final` ed ON eo.booking_id = ed.booking_id WHERE  ( (eo.booking_status ='approved'  AND eo.arrival=1) OR (eo.booking_status='breakage' AND eo.arrival=0) OR (eo.booking_status='payment failed')) AND   (eo.order_id LIKE ? OR ed.course LIKE ? OR ed.username LIKE ?  )  ORDER BY eo.booking_id DESC ";
 
     $res = select($query,["%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%"],'sss');
 
@@ -70,7 +70,7 @@ if(isset($_POST['get_bookings_equipment'])){
                 Student ID: $data[email]
             </span>
             <br>
-            <b>Name: </b> $data[username]
+            <b>Representative: </b> $data[username]
             <br>
             <b>Course: </b> $data[course]
             <br>
@@ -89,10 +89,7 @@ if(isset($_POST['get_bookings_equipment'])){
             <b>Quantity: </b> $data[quantity]
             <br>
             <b>Remarks: </b> $data[quantity_no] pcs
-            
-            <br>
-            <b>Volume : </b>  $data[volume] Needed
-            <br>
+  
           
             </td>
             <td>
@@ -102,6 +99,9 @@ if(isset($_POST['get_bookings_equipment'])){
             <br>
             <b>Date: </b> $date
             </td>
+            <td><b>
+              $data[res_breakage]
+            </b></td>
             <td>
             <span class='badge $status_bg' >$data[booking_status]</span>
             </td>

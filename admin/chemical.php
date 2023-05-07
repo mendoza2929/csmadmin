@@ -106,11 +106,11 @@ adminLogin();
                                 <label class="form-label fw-bold">Name of Reagent</label>
                                 <input type="text" name="name" class="form-control shadow-none">
                             </div>
-                            <div class="col-md-2 mb-3">
+                            <!--<div class="col-md-2 mb-3">
                                 <label class="form-label fw-bold">Volume</label>
                                 <input type="number" min="1" name="area" class="form-control shadow-none">
-                            </div>
-                            <div class="col-md-2 mb-3">
+                            </div>-->
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Stock</label>
                                 <input type="number" min="1" name="quantity" class="form-control shadow-none">
                             </div>
@@ -119,7 +119,7 @@ adminLogin();
                                 <select class='form-select shadow-none' aria-label='Default select example' name='unit' required>
                                 <option disabled selected value="">Select a Unit...</option> <!-- placeholder option -->
                                 <?php
-                                $res = selectAll('features');
+                                $res = selectAll('chemical_unit');
                                 while($opt = mysqli_fetch_assoc($res)){
                                     echo "<option value='$opt[name]'>$opt[name]</option>";
                                 }
@@ -169,11 +169,11 @@ adminLogin();
                                 <label class="form-label fw-bold">Name of Reagent</label>
                                 <input type="text" name="name" class="form-control shadow-none">
                             </div>
-                            <div class="col-md-2 mb-3">
+                            <!--<div class="col-md-2 mb-3">
                                 <label class="form-label fw-bold">Volume</label>
                                 <input type="number" min="1" name="area" class="form-control shadow-none">
-                            </div>
-                            <div class="col-md-2 mb-3">
+                            </div>-->
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Stock</label>
                                 <input type="number" min="1" name="quantity" class="form-control shadow-none">
                             </div>
@@ -182,7 +182,7 @@ adminLogin();
                                 <select class='form-select shadow-none' aria-label='Default select example' name='unit' required>
                                 <option disabled selected value="">Select a Unit...</option> <!-- placeholder option -->
                                 <?php
-                                $res = selectAll('features');
+                                $res = selectAll('chemical_unit');
                                 while($opt = mysqli_fetch_assoc($res)){
                                     echo "<option value='$opt[name]'>$opt[name]</option>";
                                 }
@@ -250,7 +250,7 @@ function add_chemical(){
     let data= new FormData();
         data.append('add_chemical','');
         data.append('name',add_chemical_form.elements['name'].value);
-        data.append('area',add_chemical_form.elements['area'].value);
+        // data.append('area',add_chemical_form.elements['area'].value);
         data.append('quantity',add_chemical_form.elements['quantity'].value);
         data.append('unit',add_chemical_form.elements['unit'].value);
         data.append('date_added',add_chemical_form.elements['date_added'].value);
@@ -316,7 +316,7 @@ function chemical_details(id){
         
             let data = JSON.parse(this.responseText);
             edit_chemical.elements['name'].value = data.chemicaldata.name;
-            edit_chemical.elements['area'].value = data.chemicaldata.area;
+            // edit_chemical.elements['area'].value = data.chemicaldata.area;
             edit_chemical.elements['unit'].value = data.chemicaldata.unit;
             edit_chemical.elements['quantity'].value = data.chemicaldata.quantity;
             edit_chemical.elements['date_added'].value = data.chemicaldata.date_added;
@@ -346,7 +346,7 @@ function submit_edit_chemical(){
         data.append('submit_edit_chemical','');
         data.append('chemical_id',edit_chemical.elements['chemical_id'].value);
         data.append('name',edit_chemical.elements['name'].value);
-        data.append('area',edit_chemical.elements['area'].value);
+        // data.append('area',edit_chemical.elements['area'].value);
         data.append('unit',edit_chemical.elements['unit'].value);
         data.append('quantity',edit_chemical.elements['quantity'].value);
         data.append('date_added',edit_chemical.elements['date_added'].value);

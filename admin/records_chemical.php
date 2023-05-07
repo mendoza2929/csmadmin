@@ -36,11 +36,11 @@ adminLogin();
 
       <main id="main" class="main">
          <div class="pagetitle">
-            <h1>All Apparatus Records</h1>
+            <h1>All Chemical Records</h1>
             <nav>
                <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                  <li class="breadcrumb-item active">Apparatus Records</li>
+                  <li class="breadcrumb-item active">Chemical Records</li>
                </ol>
 
           

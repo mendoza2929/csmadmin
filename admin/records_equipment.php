@@ -68,6 +68,7 @@ adminLogin();
                                 <th scope="col">User Details</th>
                                 <th scope="col">Item Discription</th>
                                 <th scope="col">Time Details</th> 
+                                <th scope="col">Responsible</th> 
                                 <th scope="col">Status</th> 
                                
                                 </tr>

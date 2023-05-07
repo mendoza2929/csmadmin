@@ -42,11 +42,12 @@ if(isset($_POST['get_bookings'])){
 
     while($data = mysqli_fetch_array($limit_res)){
 
-      $date = date("d-m-Y",strtotime($data['datentime']));
+      $date = date('F j Y',strtotime($data['datentime']));
         
-      $checkin= date("d-m-Y g:i a",strtotime($data['check_in']));
+      $checkin= date("F j Y g:i a",strtotime($data['check_in']));
                   
-      $checkout= date("d-m-Y g:i a",strtotime($data['check_out']));
+      $checkout= date("F j Y g:i a",strtotime($data['check_out']));
+
 
 
 
@@ -69,7 +70,7 @@ if(isset($_POST['get_bookings'])){
                 Student ID: $data[email]
             </span>
             <br>
-            <b>Name: </b> $data[user_name]
+            <b>Representative: </b> $data[user_name]
             <br>
             <b>Course: </b> $data[course]
             <br>
@@ -85,19 +86,18 @@ if(isset($_POST['get_bookings'])){
             <td>
             <b>item: </b> $data[room_name]
             <br>
-            <b>Quantity: </b> $data[quantity]
+            <b>Quantity: </b> $data[quantity] pcs
             <br>
             <b>Remarks: </b> $data[quantity_no] pcs
             
             <br>
-            <b>Volume : </b>  $data[volume] Needed
-            <br>
           
             </td>
+            <td><b>$data[res_breakage]</b></td>
             <td>
-            <b>Start Date: </b> $checkin
+            <b>Start Class: </b> $checkin
             <br>
-            <b>End Date: </b> $checkout
+            <b>End Class: </b> $checkout
             <br>
             <b>Date: </b> $date
             </td>

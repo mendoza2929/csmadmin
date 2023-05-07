@@ -30,11 +30,11 @@ echo "<table>
 
 while($data = mysqli_fetch_array($res)){
 
-    $date = date("d-m-Y",strtotime($data['datentime']));
+    $date = date("F j Y",strtotime($data['datentime']));
       
-    $checkin= date("d-m-Y g:i a",strtotime($data['check_in']));
+    $checkin= date("F j Y g:i a",strtotime($data['check_in']));
                 
-    $checkout= date("d-m-Y g:i a",strtotime($data['check_out']));
+    $checkout= date("F j Y g:i a",strtotime($data['check_out']));
 
 
 
