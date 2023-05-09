@@ -111,7 +111,7 @@ adminLogin();
                                 <input type="number" min="1" name="area" class="form-control shadow-none">
                             </div>-->
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold">Stock</label>
+                                <label class="form-label fw-bold">Unit</label>
                                 <input type="number" min="1" name="quantity" class="form-control shadow-none">
                             </div>
                             <div class="col-4 mb-3">
@@ -174,7 +174,7 @@ adminLogin();
                                 <input type="number" min="1" name="area" class="form-control shadow-none">
                             </div>-->
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold">Stock</label>
+                                <label class="form-label fw-bold">Unit</label>
                                 <input type="number" min="1" name="quantity" class="form-control shadow-none">
                             </div>
                             <div class="col-4 mb-3">

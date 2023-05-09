@@ -8,27 +8,36 @@ adminLogin();
 
 
 
-if(isset($_POST['add_rooms'])){
-    // $features = filteration(json_decode($_POST['features']));
-
+if (isset($_POST['add_rooms'])) {
     $frm_data = filteration($_POST);
     $flag = 0;
 
-    $q1 = "INSERT INTO `rooms`(`name`, `brand`,`size`,`unit`,`quantity`, `date`) VALUES (?,?,?,?,?,?)";
-    $values = [$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['date']];
+    // Check if the room with the same name already exists
+    $q_check = "SELECT COUNT(*) FROM `rooms` WHERE `name` = ?";
+    $check_values = [$frm_data['name']];
+    $result = select($q_check, $check_values, 's');
+    $count = $result->fetch_row()[0];  // Fetch the result as a row and access the count value
 
+    if ($count > 0) {
+        // Room with the same name already exists, display an error message or handle the situation as desired
+        echo "Error: Room with the same name already exists.";
+    } else {
+        $q1 = "INSERT INTO `rooms`(`name`, `brand`,`size`,`unit`,`quantity`,`avail`,`date`) VALUES (?,?,?,?,?,?,?)";
+        $values = [$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['avail'],$frm_data['date']];
 
-    if(insert($q1,$values,'ssisis')){
-        $flag=1;
-    }
+        if (insert($q1, $values, 'ssisiis')) {
+            $flag = 1;
+        }
 
-    
-    if($flag){
-        echo 1;
-    }else{
-        echo 0;
+        if ($flag) {
+            echo 1;
+        } else {
+            echo 0;
+        }
     }
 }
+
+
 
 if(isset($_POST['get_rooms'])){  
     $res = select("SELECT * FROM `rooms` WHERE `removed`=?",[0],'i');
@@ -57,6 +66,7 @@ if(isset($_POST['get_rooms'])){
                 <td>$row[size]</td>
                 <td>$row[unit]</td>
                 <td>$row[quantity]</td>
+                <td>$row[avail]</td>
                 <td>$date</td>
                 <td>$status</td>
                 <td>
@@ -126,10 +136,10 @@ if(isset($_POST['edit_rooms'])){
     $frm_data = filteration($_POST);
     $flag = 0;
 
-    $q1 = "UPDATE `rooms` SET `name`=?,`brand`=?,`size`=?,`unit`=?, `quantity`=? , `date`=? WHERE `id`=?";
-    $values=[$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['date'],$frm_data['room_id']];
+    $q1 = "UPDATE `rooms` SET `name`=?,`brand`=?,`size`=?,`unit`=?, `quantity`=? , `avail`=? ,  `date`=? WHERE `id`=?";
+    $values=[$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['avail'],$frm_data['date'],$frm_data['room_id']];
 
-    if(update($q1,$values,'ssisisi')){
+    if(update($q1,$values,'ssisissi')){
         $flag =1;
     }
     
@@ -177,6 +187,7 @@ if(isset($_POST['search_apparatus'])){
         <td>$row[size]</td>
         <td>$row[unit]</td>
         <td>$row[quantity]</td>
+        <td>$row[avail]</td>
         <td>$date</td>
         <td>$status</td>
         <td>

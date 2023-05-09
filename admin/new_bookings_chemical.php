@@ -36,7 +36,7 @@ adminLogin();
 
       <main id="main" class="main">
          <div class="pagetitle">
-            <h1>New Chemical Borrowing</h1>
+            <h1>New Requested Chemical</h1>
             <nav>
                <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="index.php">Home</a></li>

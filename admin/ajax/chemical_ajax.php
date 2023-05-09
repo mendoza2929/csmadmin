@@ -67,7 +67,7 @@ if(isset($_POST['get_chemical'])){
             $expiration_notice = "<span class='badge rounded-pill bg-danger'>Expired!</span>";
         }
         // Check if the expiration date is within one month
-        else if ($days_diff < 30) {
+        else if ($days_diff < 60) {
             $expiration_notice = "<span class='badge rounded-pill bg-warning'>Expiring soon!</span>";
         }
         // If the expiration date is not close, set the notice to an empty string

@@ -34,7 +34,7 @@ if(isset($_POST['get_users'])){
         $data.= "
            <tr>
             <td>$i</td>
-            <td>$row[name]</td>
+            <td>$row[name] $row[lname] $row[suffix]</td>
             <td>$row[student_id]</td>
             <td>$row[email]</td>
             <td>$row[course]</td>
@@ -83,58 +83,40 @@ if(isset($_POST['remove_user'])){
 }
 
 
-if(isset($_POST['search_user'])){  
+if (isset($_POST['search_user'])) {
+  $frm_data = filteration($_POST);
+  $query = "SELECT * FROM `user_cred` WHERE CONCAT(`name`, ' ', `lname`, ' ', `suffix`) LIKE ?";
 
-    $frm_data = filteration($_POST);
-    $query = "SELECT * FROM  `user_cred` WHERE `name` LIKE ?";
+  $res = select($query, ["%$frm_data[name]%"], 's');
+  $i = 1;
 
-    $res = select($query,["%$frm_data[name]%"],'s');
-    $i=1;
+  $data = "";
 
-    
+  while ($row = mysqli_fetch_array($res)) {
 
-    $data= "";
+      $del_btn = "
+      <button type='button' onclick='remove_user($row[id])' class='btn btn-danger btn-sm shadow-none'>
+      <i class='i bi-trash'></i>
+      </button>
+      ";
 
-    while($row = mysqli_fetch_array($res)){
-        
-        $del_btn = "
-        <button type='button' onclick='remove_user($row[id])' class='btn btn-danger btn-sm shadow-none'>
-        <i class='i bi-trash'></i>
-        </button>
-        ";
+      $date = date("d-m-y", strtotime($row['datentime']));
 
- 
-        // $status = "<button onclick='toggleStatus($row[id],0)' class='btn btn-success btn-sm shadow-none'>Active</button>";
-
-        // if(!$row['status']){
-        //     $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Inactive</button>";
-            
-        // }
-
-     
-
-
-
-        $date = date("d-m-y",strtotime($row['datentime']));
-
-        $data.= "
-        <tr>
-        <td>$i</td>
-        <td>$row[name]</td>
-        <td>$row[student_id]</td>
-        <td>$row[email]</td>
-        <td>$row[course]</td>
-        <td>$row[year]</td>
-        <td>$row[phonenum]</td>
-      
-  
-        <td>$date</td>
-     
-       </tr>
-        ";
-        $i++;
-}
-echo $data;
+      $data .= "
+      <tr>
+      <td>$i</td>
+      <td>$row[name] $row[lname] $row[suffix]</td>
+      <td>$row[student_id]</td>
+      <td>$row[email]</td>
+      <td>$row[course]</td>
+      <td>$row[year]</td>
+      <td>$row[phonenum]</td>
+      <td>$date</td>
+      </tr>
+      ";
+      $i++;
+  }
+  echo $data;
 }
 
 

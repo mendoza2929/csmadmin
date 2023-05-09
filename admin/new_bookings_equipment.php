@@ -36,7 +36,7 @@ adminLogin();
 
       <main id="main" class="main">
          <div class="pagetitle">
-            <h1>New Borrowing Equipment</h1>
+            <h1>New Requested Borrowing</h1>
             <nav>
                <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="index.php">Home</a></li>

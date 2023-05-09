@@ -36,7 +36,7 @@ adminLogin();
 
       <main id="main" class="main">
          <div class="pagetitle">
-            <h1>New Borrowing Apparatus</h1>
+            <h1>New Requested Apparatus</h1>
             <nav>
                <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="index.php">Home</a></li>
@@ -92,7 +92,7 @@ adminLogin();
                         <div class="modal-body"> 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Approved Return</label>
-                                <input type="hidden" name="room_no">
+                              
                             </div>
                          <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base ">
                             Note: Are you certain this object is undamaged?
@@ -277,7 +277,6 @@ function get_bookings(search=''){
     
         let data = new FormData();
     
-        data.append('room_no',assign_room_form.elements['room_no'].value);
         data.append('booking_id',assign_room_form.elements['booking_id'].value);
         data.append('assign_room','');
     

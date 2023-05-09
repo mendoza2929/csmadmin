@@ -68,6 +68,7 @@ adminLogin();
                                 <th scope="col">size</th> 
                                 <th scope="col" >Unit</th>
                                 <th scope="col">Current Stock</th> 
+                                <th scope="col">Availability</th> 
                                 <th scope="col">Date Added</th> 
                                 <th scope="col">Status</th> 
                                 <th scope="col">Action</th> 
@@ -130,6 +131,10 @@ adminLogin();
                                 <input type="number" name="quantity" class="form-control shadow-none">
                             </div>
                             <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Availability</label>
+                                <input type="number" name="avail" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold">Date Added</label>
                                 <input type="date" name="date" class="form-control shadow-none">
                             </div>
@@ -182,8 +187,12 @@ adminLogin();
                             </select>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label class="form-label fw-bold">Quantity</label>
+                                <label class="form-label fw-bold">Stock</label>
                                 <input type="number" name="quantity" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Availability</label>
+                                <input type="number" name="avail" class="form-control shadow-none">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold">Date Added</label>
@@ -249,6 +258,7 @@ function add_rooms(){
         data.append('size',room_form.elements['size'].value);
         data.append('unit',room_form.elements['unit'].value);
         data.append('quantity',room_form.elements['quantity'].value);
+        data.append('avail',room_form.elements['avail'].value);
         data.append('date',room_form.elements['date'].value);
 
 
@@ -317,6 +327,7 @@ edit_form.addEventListener('submit', function(e){
            edit_form.elements['size'].value = data.roomdata.size;
            edit_form.elements['unit'].value = data.roomdata.unit;
            edit_form.elements['quantity'].value = data.roomdata.quantity;
+           edit_form.elements['avail'].value = data.roomdata.avail;
            edit_form.elements['date'].value = data.roomdata.date;
            edit_form.elements['room_id'].value = data.roomdata.id;
 
@@ -343,6 +354,7 @@ function submit_edit_rooms(){
         data.append('size',edit_form.elements['size'].value);
         data.append('unit',edit_form.elements['unit'].value);
         data.append('quantity',edit_form.elements['quantity'].value);
+        data.append('avail',edit_form.elements['avail'].value);
         data.append('date',edit_form.elements['date'].value);
 
 
