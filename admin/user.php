@@ -66,9 +66,9 @@ adminLogin();
                                 <th scope="col">Email</th>
                                 <th scope="col">Course</th>
                                 <th scope="col">Year</th>
-                                <th scope="col">Phone Number</th> 
+                               
                         
-                                <th scope="col">Date</th> 
+                        
                                 
                                 </tr>
                             </thead>

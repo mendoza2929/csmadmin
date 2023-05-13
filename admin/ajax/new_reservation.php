@@ -46,11 +46,16 @@ if(isset($_POST['get_bookings'])){
             <br>
             <b>Year: </b> $data[year] year
             <br>
+            <b>Subject: </b> $data[lab] 
+            <br>
             <b>Teacher Name: </b> $data[teacher]
             <br>
             <b>Room Number: </b> $data[apr_no]
             <br>
             <b>Group No: </b> $data[group_no]
+            </td>
+            <td>
+            <b>$data[group_mate]</b>
             </td>
             <td>
             <b>Item: </b> $data[room_name]
@@ -66,12 +71,12 @@ if(isset($_POST['get_bookings'])){
             </td>
             <td>
             <button type='button' onclick='assign_room($data[booking_id])' class='btn text-white btn-sm fw-bold bg-success shadow-none' data-bs-toggle='modal' data-bs-target='#assign-room'>
-              <i class='bi bi-clipboard-plus'></i> Approved Return
+               Approved 
             </button>
             <br>
 
             <button type='button' onclick='quantity_room($data[booking_id])' class='btn text-white btn-sm fw-bold bg-danger shadow-none mt-2' data-bs-toggle='modal' data-bs-target='#quantity-room'>
-            <i class='bi bi-clipboard-plus'></i> Remarks
+            Remarks
           </button>
           <br>
           
@@ -171,15 +176,55 @@ if (isset($_POST['assign_room'])) {
  
 
 // }
-
 if(isset($_POST['quantity_room'])){
   $frm_data = filteration($_POST);
 
   $breakage_qty = $frm_data['quantity_no'];
-  $res_group = $frm_data['res_group'];
+  // $res_group = $frm_data['res_group'];
   $res_breakage = $frm_data['res_breakage'];
   $room_id = $_SESSION['room']['id'];
 
+  $booking_id = $frm_data['booking_id'];
+  $select_query = "SELECT `group_mate` FROM `booking_details` WHERE `booking_id` = ?";
+  $select_values = [$booking_id];
+  $bd_result = select($select_query, $select_values, 'i');
+  $bd_fetch = mysqli_fetch_assoc($bd_result);
+  $group_mates = $bd_fetch['group_mate'];
+  $group_mate_list = explode(",", $group_mates);
+
+  // Check if the name entered in `res_breakage` field matches one of the group mates in the booking details:
+  if (!in_array($res_breakage, $group_mate_list)) {
+    echo "The Name entered in the  field does not match any of the group mate.";
+    return;
+  }
+
+
+  // Get the booking details for the given booking ID:
+    $booking_id = $frm_data['booking_id'];
+    $select_query = "SELECT `quantity` FROM `booking_details` WHERE `booking_id` = ?";
+    $select_values = [$booking_id];
+    $bd_result = select($select_query, $select_values, 'i');
+    $bd_fetch = mysqli_fetch_assoc($bd_result);
+    $booking_qty = $bd_fetch['quantity'];
+  
+    // Check if the quantity entered by the user matches the quantity in the booking details:
+    if ($breakage_qty > $booking_qty) {
+      echo "The breakage quantity does not match the quantity in the apparatus details.";
+      return;
+    }
+  
+    // Get the quantity of the room before updating it based on the breakage:
+    $select_query = "SELECT `quantity` FROM `rooms` WHERE `id` = ?";
+    $select_values = [$room_id];
+    $rq_result = select($select_query, $select_values, 'i');
+    $rq_fetch = mysqli_fetch_assoc($rq_result);
+    $room_qty = $rq_fetch['quantity'];
+  
+    // Check if the breakage quantity is greater than the quantity of the room:
+    if ($breakage_qty > $booking_qty) {
+      echo "The breakage quantity exceeds the quantity in the booking details.";
+      return;
+    }
   // Update the quantity of the room in the `rooms` table based on the breakage:
   $update_query = "UPDATE `rooms` SET `quantity` = `quantity` - ? WHERE `id` = ?";
   $update_values = [$breakage_qty, $room_id];
@@ -202,10 +247,9 @@ if(isset($_POST['quantity_room'])){
   }
 
   // Update the `quantity_no` and `res_breakage` fields in the `booking_details` table for the booking that had the breakage:
-  $booking_id = $frm_data['booking_id'];
-  $update_query = "UPDATE `booking_details` SET `quantity_no` = ? , `res_breakage` = ?  , `res_group` = ? WHERE `booking_id` = ?";
-  $update_values = [$breakage_qty, $res_breakage, $res_group, $booking_id];
-  $res = update($update_query, $update_values, 'issi');
+  $update_query = "UPDATE `booking_details` SET `quantity_no` = ? , `res_breakage` = ?  WHERE `booking_id` = ?";
+  $update_values = [$breakage_qty, $res_breakage, $booking_id];
+  $res = update($update_query, $update_values, 'isi');
 
   // Check if the remaining quantity of the room is zero and update the status of the room in the `rooms` table:
   $select_query = "SELECT `quantity` FROM `rooms` WHERE `id` = ?";
@@ -226,6 +270,8 @@ if(isset($_POST['quantity_room'])){
 
   echo ($res == 1) ? 1 : 0;
 }
+
+
 
 
 

@@ -29,7 +29,7 @@ if(isset($_POST['get_users'])){
 
 
 
-        $date = date("d-m-y",strtotime($row['datentime']));
+        // $date = date("d-m-y",strtotime($row['datentime']));
 
         $data.= "
            <tr>
@@ -39,10 +39,10 @@ if(isset($_POST['get_users'])){
             <td>$row[email]</td>
             <td>$row[course]</td>
             <td>$row[year]</td>
-            <td>$row[phonenum]</td>
+        
           
       
-            <td>$date</td>
+       
          
            </tr>
         ";
@@ -100,7 +100,7 @@ if (isset($_POST['search_user'])) {
       </button>
       ";
 
-      $date = date("d-m-y", strtotime($row['datentime']));
+      // $date = date("d-m-y", strtotime($row['datentime']));
 
       $data .= "
       <tr>
@@ -111,7 +111,7 @@ if (isset($_POST['search_user'])) {
       <td>$row[course]</td>
       <td>$row[year]</td>
       <td>$row[phonenum]</td>
-      <td>$date</td>
+     
       </tr>
       ";
       $i++;

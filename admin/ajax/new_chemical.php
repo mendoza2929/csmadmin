@@ -49,9 +49,14 @@ if(isset($_POST['get_booking_chemical'])){
           <br>
           <b>Teacher Name: </b> $data[teacher]
           <br>
+          <b>Subject: </b> $data[lab]
+          <br>
           <b>Room Number: </b> $data[apr_no]
           <br>
           <b>Group No: </b> $data[group_no]
+          </td>
+          <td>
+          <b>$data[group_mate]</b>
           </td>
           <td>
           <b>Item: </b> $data[chemical_name]
@@ -71,8 +76,8 @@ if(isset($_POST['get_booking_chemical'])){
          
           <br>
 
-          <button type='button' onclick='quantity_chemical($data[booking_id])' class='btn text-white btn-sm fw-bold bg-success shadow-none mt-2' data-bs-toggle='modal' data-bs-target='#quantity-chemical'>
-          <i class='bi bi-clipboard-plus'></i> Approved Chemical
+          <button type='button' onclick='assign_chemical($data[booking_id])' class='btn text-white btn-sm fw-bold bg-success shadow-none mt-2' data-bs-toggle='modal' data-bs-target='#assign-chemical'>
+           Approved 
         </button>
         <br>
         
@@ -99,55 +104,56 @@ if(isset($_POST['assign_chemical'])){
       
 $frm_data = filteration($_POST);
 
-$query = "UPDATE `chemical_order_final` co INNER JOIN `chemical_details_final` cd ON co.booking_id = cd.booking_id SET co.arrival = ?, cd.room_no = ? WHERE co.booking_id = ? ";
+$query = "UPDATE `chemical_order_final` co INNER JOIN `chemical_details_final` cd ON co.booking_id = cd.booking_id SET co.arrival = ? WHERE co.booking_id = ? ";
 
-$values = [1,$frm_data['chemical_no'],$frm_data['booking_id']];
+$values = [1,$frm_data['booking_id']];
 
-$res = update($query,$values,'isi');
+$res = update($query,$values,'ii');
 
-echo ($res==2) ? 1 : 0;  //it will update 2 rows so it will return 2 
+echo ($res==1) ? 1 : 0; 
+ //it will update 2 rows so it will return 2 
 
 }
 
 
 
-if(isset($_POST['quantity_chemical'])){
+// if(isset($_POST['quantity_chemical'])){
 
 
-  $frm_data = filteration($_POST);
+//   $frm_data = filteration($_POST);
 
-  $breakage_qty = $frm_data['quantity_no'];
-  $room_id = $_SESSION['chemical']['id'];
+//   $breakage_qty = $frm_data['quantity_no'];
+//   $room_id = $_SESSION['chemical']['id'];
   
-  // Update the quantity of the room in the `rooms` table based on the breakage:
-  $update_query = "UPDATE `chemical` SET `quantity` = `quantity` - ? WHERE `id` = ?";
-  $update_values = [$breakage_qty, $room_id];
-  $res = update($update_query, $update_values, 'ii');
+//   // Update the quantity of the room in the `rooms` table based on the breakage:
+//   $update_query = "UPDATE `chemical` SET `quantity` = `quantity` - ? WHERE `id` = ?";
+//   $update_values = [$breakage_qty, $room_id];
+//   $res = update($update_query, $update_values, 'ii');
   
-  // Update the `quantity_no` field in the `booking_details` table for the booking that had the breakage:
-  $booking_id = $frm_data['booking_id'];
-  $update_query = "UPDATE `chemical_details_final` SET `quantity_no` = ? WHERE `booking_id` = ?";
-  $update_values = [$breakage_qty, $booking_id];
-  $res = update($update_query, $update_values, 'ii');
+//   // Update the `quantity_no` field in the `booking_details` table for the booking that had the breakage:
+//   $booking_id = $frm_data['booking_id'];
+//   $update_query = "UPDATE `chemical_details_final` SET `quantity_no` = ? WHERE `booking_id` = ?";
+//   $update_values = [$breakage_qty, $booking_id];
+//   $res = update($update_query, $update_values, 'ii');
   
-  // Check if the remaining quantity of the room is zero and update the status of the room in the `rooms` table:
-  $select_query = "SELECT `quantity` FROM `chemical` WHERE `id` = ?";
-  $select_values = [$room_id];
-  $rq_result = select($select_query, $select_values, 'i');
-  $rq_fetch = mysqli_fetch_assoc($rq_result);
+//   // Check if the remaining quantity of the room is zero and update the status of the room in the `rooms` table:
+//   $select_query = "SELECT `quantity` FROM `chemical` WHERE `id` = ?";
+//   $select_values = [$room_id];
+//   $rq_result = select($select_query, $select_values, 'i');
+//   $rq_fetch = mysqli_fetch_assoc($rq_result);
   
-  if ($rq_fetch['quantity'] == 0) {
-    $update_query = "UPDATE `chemical` SET `status` = 'unavailable' WHERE `id` = ?";
-    $update_values = [$room_id];
-    $res = update($update_query, $update_values, 'i');
-  }
+//   if ($rq_fetch['quantity'] == 0) {
+//     $update_query = "UPDATE `chemical` SET `status` = 'unavailable' WHERE `id` = ?";
+//     $update_values = [$room_id];
+//     $res = update($update_query, $update_values, 'i');
+//   }
   
-  // Update the booking status and refund in the `booking_order` table:
-  $query = "UPDATE `chemical_order_final` co INNER JOIN `chemical_details_final` cd ON co.booking_id = cd.booking_id SET co.booking_status = ?, co.arrival = ? WHERE co.booking_id = ?";
-  $values = ['approved', 1, $booking_id];
-  $res = update($query, $values, 'sii');
+//   // Update the booking status and refund in the `booking_order` table:
+//   $query = "UPDATE `chemical_order_final` co INNER JOIN `chemical_details_final` cd ON co.booking_id = cd.booking_id SET co.booking_status = ?, co.arrival = ? WHERE co.booking_id = ?";
+//   $values = ['approved', 1, $booking_id];
+//   $res = update($query, $values, 'sii');
   
-  echo ($res == 1) ? 1 : 0;
+//   echo ($res == 1) ? 1 : 0;
   
 
 
@@ -155,7 +161,7 @@ if(isset($_POST['quantity_chemical'])){
 
  
 
-}
+// }
 
 
 ?>

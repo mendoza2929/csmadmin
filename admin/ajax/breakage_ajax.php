@@ -18,7 +18,7 @@ if(isset($_POST['get_breakage'])){
 
 
     
-    $query = "SELECT bo.*, bd.*  FROM `booking_order` bo INNER JOIN `booking_details` bd ON bo.booking_id = bd.booking_id WHERE  (  (bo.booking_status='breakage' AND bo.arrival=0) ) AND   (bo.order_id LIKE ? OR bd.course LIKE ? OR bd.teacher LIKE ?  OR bd.user_name LIKE ?)  ORDER BY bo.booking_id DESC ";
+    $query = "SELECT bo.*, bd.*  FROM `booking_order` bo INNER JOIN `booking_details` bd ON bo.booking_id = bd.booking_id WHERE  (  (bo.booking_status='breakage' AND bo.arrival=0) ) AND   (bo.order_id LIKE ? OR bd.course LIKE ? OR bd.teacher LIKE ?  OR bd.res_breakage LIKE ?)  ORDER BY bo.booking_id DESC ";
 
     $res = select($query,["%$frm_data[search]%" ,"%$frm_data[search]%" ,"%$frm_data[search]%","%$frm_data[search]%"],'ssss');
 
@@ -69,7 +69,10 @@ if(isset($_POST['get_breakage'])){
         <b> $date
         </td>
         <td>
-        $data[user_name]
+        $data[res_breakage]
+        </td>
+        <td>
+        $data[lab]
         </td>
             <td>
             $data[teacher]

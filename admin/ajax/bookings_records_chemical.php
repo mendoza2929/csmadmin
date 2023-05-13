@@ -74,6 +74,8 @@ if(isset($_POST['get_booking_chemical'])){
           <b>Course: </b> $data[course]
           <br>
           <b>Year: </b> $data[year] year
+          <br>
+          <b>Subject: </b> $data[lab]
         
           <br>
           <b>Teacher Name: </b> $data[teacher]
@@ -82,6 +84,7 @@ if(isset($_POST['get_booking_chemical'])){
           <br>
           <b>Room No. : </b>  $data[apr_no] 
           </td>
+          <td><b>$data[group_mate]</b></td>
           <td>
           <b>item: </b> $data[chemical_name]
           <br>

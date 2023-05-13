@@ -66,6 +66,7 @@ adminLogin();
                                 <tr class="text-white"  style="background-color:#ED8B5A;">
                                 <th scope="col">#</th>
                                 <th scope="col">User Details</th>
+                                <th scope="col">GroupMates</th>
                                 <th scope="col">Item Discription</th>
                                 <th scope="col">Responsible</th>
                                 <th scope="col">Time Details</th> 

@@ -182,6 +182,37 @@ adminLogin();
                         <div class="card-body">
 
                         <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="card-title m-0 fw-bold"> Add Class Laboratory</h5>
+                            <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#class_name">
+                            <i class="bi bi-file-plus"></i> Add
+                            </button>
+                        </div>
+
+
+                           <div class="table-responsive-md" style="height:450px; overflow-y:scroll;">
+                           <table class="table table-hover border">
+                            <thead>
+                                <tr class="text-white"  style="background-color:#ED8B5A;">
+                                <th scope="col">#</th>
+                                <th scope="col">Class Laboratory </th>
+                                <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="class_name_data">
+                          
+                             
+                           
+                            </tbody>
+                            </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+
+                        <div class="d-flex align-items-center justify-content-between mb-3">
                             <h5 class="card-title m-0 fw-bold"> Add Course</h5>
                             <button type="button" class="btn btn-warning btn-sm shadow-none" data-bs-toggle="modal" data-bs-target="#course">
                             <i class="bi bi-file-plus"></i> Add
@@ -322,6 +353,30 @@ adminLogin();
         </div>
 
         
+        
+        <div class="modal fade" id="class_name" data-bs-backdrop="static" data-bs-keyboard= "true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="class_name_form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="modal-title"><i class="bi bi-bell"></i> Add Class Laboratory</div>
+                        </div>
+                        <div class="modal-body"> 
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Class Laboratory Name</label>
+                                <input type="text" id="class_name" class="form-control shadow-none">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-secondary shadow-none" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success shadow-none">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        
         <div class="modal fade" id="course" data-bs-backdrop="static" data-bs-keyboard= "true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form id="course_form">
@@ -383,6 +438,7 @@ adminLogin();
     let chemical_form = document.getElementById('chemical_form');
     let made_form = document.getElementById('made_form');
     let features_form = document.getElementById('features_form');
+    let class_name_form = document.getElementById('class_name_form');
     let course_form = document.getElementById('course_form');
 
     facilities_form.addEventListener('submit', function(e){
@@ -751,6 +807,90 @@ adminLogin();
         xhr.send('rem_features='+val);
     }
 
+    
+    class_name_form.addEventListener('submit', function(e){
+        e.preventDefault();
+        add_class_name();
+    });
+
+
+    
+    function add_class_name(){
+        let data= new FormData();
+        data.append('name',class_name_form.elements['class_name'].value);
+        data.append('add_class_name','');
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+
+        xhr.onload = function(){
+            var myModalEl = document.getElementById('class_name')
+            var modal = bootstrap.Modal.getInstance(myModalEl) // Returns a Bootstrap modal instanceof
+            modal.hide();
+
+            if(this.responseText==1){
+                Swal.fire(
+                'Good job!',
+                'New Class Lab Create',
+                'success'
+                )
+
+                course_form.elements['course_name'].values='';
+                get_class_name();
+            }else{
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                
+                })
+            }
+
+        }
+        xhr.send(data);
+    }
+
+    function get_class_name(){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        
+        xhr.onload = function (){
+            document.getElementById('class_name_data').innerHTML = this.responseText;
+        }
+
+        xhr.send('get_class_name');
+    } 
+
+
+    function rem_class_name(val){
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","./ajax/new_records_ajax.php",true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+ 
+        xhr.onload = function (){
+            if(this.responseText==1){
+                Swal.fire(
+                'Good job!',
+                'Class Laboratory Removed Successfully',
+                'success'
+                )
+                get_class_name();
+            }
+            else{
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong.',
+                })
+            }
+        }
+
+        xhr.send('rem_class_name='+val);
+    }
+
+
+
 
     course_form.addEventListener('submit', function(e){
         e.preventDefault();
@@ -837,6 +977,7 @@ adminLogin();
         get_chemical();
         get_features();
         get_course();
+        get_class_name();
         get_made();
     }
     

@@ -40,21 +40,26 @@ if (isset($_POST['add_rooms'])) {
 
 
 if(isset($_POST['get_rooms'])){  
-    $res = select("SELECT * FROM `rooms` WHERE `removed`=?",[0],'i');
+    $res = selectAll('rooms');
     $i=1;
 
     $data= "";
 
     while($row = mysqli_fetch_array($res)){
         $date = date('F j Y',strtotime($row['date']));
-        if($row['status']==1){
-   
+        
+        // Check if the chemical is out of stock
+        if ($row['quantity'] == 0) {
+            $quantity_notice = "<span class='badge rounded-pill bg-danger'>Out of Stock</span>";
+            $status = "<button onclick='toggleStatus($row[id],0)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
+        }
+        else {
+            $quantity_notice = $row['quantity'];
+            if($row['status']==1){
                 $status = "<button  onclick='toggleStatus($row[id],0)'class='btn btn-success btn-sm shadow-none'>Active</button>";
-        
-        }else{
-        
-            $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
-        
+            } else {
+                $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
+            }
         }
 
 
@@ -65,7 +70,7 @@ if(isset($_POST['get_rooms'])){
                 <td><span class='badge rounded-pill bg-light text-dark'>$row[brand]</span></td>
                 <td>$row[size]</td>
                 <td>$row[unit]</td>
-                <td>$row[quantity]</td>
+                <td>$quantity_notice</td>
                 <td>$row[avail]</td>
                 <td>$date</td>
                 <td>$status</td>

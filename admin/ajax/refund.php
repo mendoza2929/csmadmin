@@ -46,6 +46,8 @@ if(isset($_POST['get_bookings'])){
             <br>
             <b>Year: </b> $data[year] year
             <br>
+            <b>Subject: </b> $data[lab] 
+            <br>
             <b>Teacher: </b> $data[teacher]
             </td>
         
@@ -61,7 +63,7 @@ if(isset($_POST['get_bookings'])){
                 <b>Date: </b> $date
             </td>
             <td>
-            <b>$data[res_group]</b>
+            <b>$data[group_mate]</b>
             </td>
             <td>
             <b>$data[res_breakage]</b>
@@ -73,7 +75,7 @@ if(isset($_POST['get_bookings'])){
         
 
             <button type='button' onclick='refund_booking($data[booking_id])' class='btn mt-2 btn-outline-success  btn-sm fw-bold shadow-none'>
-            <i class='bi bi-cash'></i> Already Complied
+           Completed
           </button>
             </td>
         </tr>

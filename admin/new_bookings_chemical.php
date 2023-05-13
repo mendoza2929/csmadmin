@@ -60,6 +60,7 @@ adminLogin();
                                 <tr class="text-white" style="background-color:#ED8B5A;">
                                 <th scope="col">#</th>
                                 <th scope="col">User Details</th>
+                                <th scope="col">GroupMates</th>
                                 <th scope="col">Item Description</th>
                                 <th scope="col">Time Details</th> 
                                 <th scope="col">Action</th> 
@@ -93,7 +94,7 @@ adminLogin();
                         <div class="modal-body"> 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">This chemical obtained confirmation</label>
-                                <input type="hidden" name="chemical_no">
+                            
                             </div>
                          <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base ">
                             Note: Are you certain that this chemical has a permit?
@@ -261,7 +262,7 @@ function get_booking_chemical(search=''){
     
         let data = new FormData();
     
-        data.append('chemical_no',assign_chemical_form.elements['chemical_no'].value);
+        // data.append('chemical_no',assign_chemical_form.elements['chemical_no'].value);
         data.append('booking_id',assign_chemical_form.elements['booking_id'].value);
         data.append('assign_chemical','');
     

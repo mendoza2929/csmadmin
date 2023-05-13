@@ -14,20 +14,34 @@ if(isset($_POST['add_equipment'])){
     $frm_data = filteration($_POST);
     $flag = 0;
 
-    $q1 = "INSERT INTO `equipment`(`name`, `brand`,`made`,`unit`,`quantity`,`cost`,`date_added`) VALUES (?,?,?,?,?,?,?)";
-    $values = [$frm_data['name'],$frm_data['brand'],$frm_data['made'],$frm_data['unit'],$frm_data['quantity'],$frm_data['cost'],$frm_data['date_added']];
 
+    // Check if the room with the same name already exists
+    $q_check = "SELECT COUNT(*) FROM `equipment` WHERE `name` = ?";
+    $check_values = [$frm_data['name']];
+    $result = select($q_check, $check_values, 's');
+    $count = $result->fetch_row()[0];  // Fetch the result as a row and access the count value
 
-    if(insert($q1,$values,'ssssiis')){
-        $flag=1;
-    }
-
-    
-    if($flag){
-        echo 1;
+    if($count > 0 ){
+        
     }else{
-        echo 0;
+        
+        $q1 = "INSERT INTO `equipment`(`name`, `brand`,`made`,`unit`,`quantity`,`cost`,`date_added`) VALUES (?,?,?,?,?,?,?)";
+        $values = [$frm_data['name'],$frm_data['brand'],$frm_data['made'],$frm_data['unit'],$frm_data['quantity'],$frm_data['cost'],$frm_data['date_added']];
+    
+    
+        if(insert($q1,$values,'ssssiis')){
+            $flag=1;
+        }
+    
+        
+        if($flag){
+            echo 1;
+        }else{
+            echo 0;
+        }
     }
+
+
 }
 
 

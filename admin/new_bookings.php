@@ -60,6 +60,7 @@ adminLogin();
                                 <tr class="text-white" style="background-color:#ED8B5A;">
                                 <th scope="col">#</th>
                                 <th scope="col">User Details</th>
+                                <th scope="col">GroupMates</th>
                                 <th scope="col">Item Description</th>
                                 <th scope="col">Time Details</th> 
                                 <th scope="col">Action</th> 
@@ -113,7 +114,7 @@ adminLogin();
 
                <div class="modal fade" id="quantity-room" data-bs-backdrop="static" data-bs-keyboard= "true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <form id="quantity_room_form">
+                <form id="quantity_room_form" novalidate>
                     <div class="modal-content">
                         <div class="modal-header">
                             <div class="modal-title"><i class="bi bi-clipboard-check-fill"></i> Breakage Item</div>
@@ -123,15 +124,21 @@ adminLogin();
                                 <label class="form-label fw-bold">Breakage Quantity</label>
                                 <input type="text" name="quantity_no" class="form-control shadow-none">
                             </div>
+                         
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Group Mate</label>
-                        
-                                <textarea class="form-control shadow-none" name="res_group"   rows="3" style="resize: none;"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Responsible For Breakage</label>
-                        
-                                <textarea class="form-control shadow-none" name="res_breakage"   rows="3" style="resize: none;"></textarea>
+                            <label class="form-label fw-bold">Responsible</label>
+        <input type="email" class="form-control mb-2 shadow-none" list="personnel_list_code" name="res_breakage"  placeholder="Type to search group mate" required multiple pattern=".@">
+        <datalist id="personnel_list_code">
+    <?php
+    $res = $con->query ('SELECT * FROM `user_cred`');
+    while($opt = mysqli_fetch_assoc($res)){
+    ?>
+      <option value="<?php echo $opt['name'].' '. $opt['lname'].' '. $opt['suffix'] ?>"></option>
+    <?php
+    }
+    ?>
+  </datalist>
+      </label>
                             </div>
                            
                          <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base ">
@@ -217,7 +224,7 @@ function get_bookings(search=''){
     
         let data = new FormData();
         data.append('quantity_no',quantity_room_form.elements['quantity_no'].value);
-        data.append('res_group',quantity_room_form.elements['res_group'].value);
+        // data.append('res_group',quantity_room_form.elements['res_group'].value);
         data.append('res_breakage',quantity_room_form.elements['res_breakage'].value);
         data.append('booking_id',quantity_room_form.elements['booking_id'].value);
         data.append('quantity_room','');
