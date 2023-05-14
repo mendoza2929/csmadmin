@@ -71,7 +71,17 @@ adminLogin();
                                     <th scope="col">Cost</th>
                                     <th scope="col">Unit</th>
                                     <th scope="col">Stock</th>
+                                    <th scope="col">Availability</th>
                                     <th scope="col">Date Added</th>
+                                    <th scope="col" style="background-color: #ED8B5A;">
+                                    <select id="shelf-filter">
+                                        <option value="all">Overall</option>
+                                        <option value="Shelf 1">Shelf 1</option>
+                                        <option value="Shelf 2">Shelf 2</option>
+                                        <option value="Shelf 3">Shelf 3</option>
+                                    </select>
+                                </th>
+
                                     <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
@@ -89,6 +99,40 @@ adminLogin();
       
   
       </main>
+
+      <style>
+        #shelf-filter {
+            border-color: white;
+            border-width: 2px;
+            color: white;
+            background-color: #ED8B5A;
+            font-weight: bold;
+        }
+
+        option {
+            font-family: "Open Sans", sans-serif;
+
+        }
+    </style>
+    <script>
+        function filterByShelf() {
+            var filter = document.getElementById("shelf-filter").value;
+            var rows = document.getElementById("equipment_data").getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                if (filter === "all") {
+                    rows[i].style.display = "";
+                } else if (cells[9].innerText === filter) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
+        document.getElementById("shelf-filter").addEventListener("change", filterByShelf);
+    </script>
+
 
 
 
@@ -143,12 +187,25 @@ adminLogin();
                                 <input type="number" name="quantity" class="form-control shadow-none">
                             </div>
                             <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Availability</label>
+                                <input type="number" name="avail" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold">Cost</label>
                                 <input type="number" name="cost" class="form-control shadow-none">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold">Date Added</label>
                                 <input type="date" name="date_added" class="form-control shadow-none">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Location</label>
+                                <select name="shelf" class="form-control shadow-none">
+                                    <option value="Shelf 1">Shelf 1</option>
+                                    <option value="Shelf 2">Shelf 2</option>
+                                    <option value="Shelf 3">Shelf 3</option>
+                                </select>
                             </div>
                         
         
@@ -214,12 +271,25 @@ adminLogin();
                                 <input type="number" name="quantity" class="form-control shadow-none">
                             </div>
                             <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Availability</label>
+                                <input type="number" name="avail" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold">Cost</label>
                                 <input type="number" name="cost" class="form-control shadow-none">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold">Date Added</label>
                                 <input type="date" name="date_added" class="form-control shadow-none">
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Location</label>
+                                <select name="shelf" class="form-control shadow-none">
+                                    <option value="Shelf 1">Shelf 1</option>
+                                    <option value="Shelf 2">Shelf 2</option>
+                                    <option value="Shelf 3">Shelf 3</option>
+                                </select>
                             </div>
 
                             <input type="hidden" name="equipment_id">
@@ -279,8 +349,10 @@ function add_equipment() {
     data.append('made', add_equipment_form.elements['made'].value);
     data.append('unit', add_equipment_form.elements['unit'].value);
     data.append('quantity', add_equipment_form.elements['quantity'].value);
+    data.append('avail', add_equipment_form.elements['avail'].value);
     data.append('cost', add_equipment_form.elements['cost'].value);
     data.append('date_added', add_equipment_form.elements['date_added'].value);
+    data.append('shelf', add_equipment_form.elements['shelf'].value);
 
 
 
@@ -303,7 +375,13 @@ function add_equipment() {
 
             get_equipment();
 
-        } else {
+        } else if(this.responseText == 'name') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Equipment with the same name already exists',
+            })
+        }else {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -352,8 +430,10 @@ function equipment_details(id) {
         edit_equipment.elements['made'].value = data.equipmentdata.made;
         edit_equipment.elements['unit'].value = data.equipmentdata.unit;
         edit_equipment.elements['quantity'].value = data.equipmentdata.quantity;
+        edit_equipment.elements['avail'].value = data.equipmentdata.avail;
         edit_equipment.elements['cost'].value = data.equipmentdata.cost;
         edit_equipment.elements['date_added'].value = data.equipmentdata.date_added;
+        edit_equipment.elements['shelf'].value = data.equipmentdata.shelf;
         edit_equipment.elements['equipment_id'].value = data.equipmentdata.id;
 
 
@@ -380,8 +460,10 @@ edit_equipment.addEventListener('submit', function (e) {
             data.append('made', edit_equipment.elements['made'].value);
             data.append('unit', edit_equipment.elements['unit'].value);
             data.append('quantity', edit_equipment.elements['quantity'].value);
+            data.append('avail', edit_equipment.elements['avail'].value);
             data.append('cost', edit_equipment.elements['cost'].value);
             data.append('date_added', edit_equipment.elements['date_added'].value);
+            data.append('shelf', edit_equipment.elements['shelf'].value);
             // data.append('desc',add_equipment_form.elements['desc'].value);
 
 

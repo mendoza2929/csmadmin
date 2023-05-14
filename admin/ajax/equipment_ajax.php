@@ -22,14 +22,14 @@ if(isset($_POST['add_equipment'])){
     $count = $result->fetch_row()[0];  // Fetch the result as a row and access the count value
 
     if($count > 0 ){
-        
+        echo "name";
     }else{
         
-        $q1 = "INSERT INTO `equipment`(`name`, `brand`,`made`,`unit`,`quantity`,`cost`,`date_added`) VALUES (?,?,?,?,?,?,?)";
-        $values = [$frm_data['name'],$frm_data['brand'],$frm_data['made'],$frm_data['unit'],$frm_data['quantity'],$frm_data['cost'],$frm_data['date_added']];
+        $q1 = "INSERT INTO `equipment`(`name`, `brand`,`made`,`unit`,`quantity`,`avail`,`cost`,`date_added`,`shelf`) VALUES (?,?,?,?,?,?,?,?,?)";
+        $values = [$frm_data['name'],$frm_data['brand'],$frm_data['made'],$frm_data['unit'],$frm_data['quantity'],$frm_data['avail'],$frm_data['cost'],$frm_data['date_added'],$frm_data['shelf']];
     
     
-        if(insert($q1,$values,'ssssiis')){
+        if(insert($q1,$values,'ssssiiiss')){
             $flag=1;
         }
     
@@ -47,21 +47,24 @@ if(isset($_POST['add_equipment'])){
 
 
 if(isset($_POST['get_equipment'])){  
-    $res = selectAll('equipment');
+    $res = selectAll('equipment ORDER BY name ASC, date_added ASC');
     $i=1;
 
     $data= "";
 
     while($row = mysqli_fetch_array($res)){
         $date = date('F j Y',strtotime($row['date_added']));
-        if($row['status']==1){
-   
+        if ($row['quantity'] == 0) {
+            $quantity_notice = "<span class='badge rounded-pill bg-danger'>Out of Stock</span>";
+            $status = "<button onclick='toggleStatus($row[id],0)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
+        }
+        else {
+            $quantity_notice = $row['quantity'];
+            if($row['status']==1){
                 $status = "<button  onclick='toggleStatus($row[id],0)'class='btn btn-success btn-sm shadow-none'>Active</button>";
-        
-        }else{
-        
-            $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
-        
+            } else {
+                $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
+            }
         }
 
 
@@ -73,8 +76,10 @@ if(isset($_POST['get_equipment'])){
                 <td><span class='badge rounded-pill bg-light text-dark'>$row[made]</span></td>
                 <td>$row[cost]</td>
                 <td>$row[unit]</td>
-                <td>$row[quantity]</td>
+                <td>$quantity_notice</td>
+                <td>$row[avail]</td>
                 <td>$date</td>
+                <td>$row[shelf]</td>
                 <td>$status</td>
                 <td>
                   
@@ -127,11 +132,11 @@ if (isset($_POST['submit_edit_equipment'])) {
 
     $flag = 0;
 
-    $q1 = "UPDATE `equipment` SET `name`=?, `brand`=?, `made`=?, `unit`=?,`quantity`=?, `cost`=?, `date_added`=? WHERE `id`=?";
-    $values = [$frm_data['name'], $frm_data['brand'], $frm_data['made'] , $frm_data['unit'], $frm_data['quantity'], $frm_data['cost'], $frm_data['date_added'], $frm_data['equipment_id']];
+    $q1 = "UPDATE `equipment` SET `name`=?, `brand`=?, `made`=?, `unit`=?,`quantity`=?, `avail`=?,`cost`=?, `date_added`=?, `shelf`=?  WHERE `id`=?";
+    $values = [$frm_data['name'], $frm_data['brand'], $frm_data['made'] , $frm_data['unit'], $frm_data['quantity'], $frm_data['avail'], $frm_data['cost'], $frm_data['date_added'], $frm_data['shelf'], $frm_data['equipment_id']];
 
   
-    if(update($q1,$values,'ssssiisi')){
+    if(update($q1,$values,'ssssiiissi')){
         $flag =1;
     }
     

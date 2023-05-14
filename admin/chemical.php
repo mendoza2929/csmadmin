@@ -43,11 +43,66 @@ adminLogin();
                   <li class="breadcrumb-item active">Chemical</li>
                </ol>
 
+               <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="notifications-dropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Notifications<i class="bi bi-bell"></i>
+                        <?php
+                        $res = selectAll('chemical');
+                        $num_expiring = 0;
+                        $num_expired = 0;
+                        $num_critical = 0;
+                        while ($row = mysqli_fetch_assoc($res)) {
+                            $current_date = strtotime(date('Y-m-d'));
+                            $expiration_date = strtotime($row['date_exp']);
+                            $days_diff = ($expiration_date - $current_date) / 86400; //86400 seconds in a day
+                            if ($expiration_date < $current_date) {
+                                $num_expired++;
+                            } else if ($days_diff < 60) {
+                                $num_expiring++;
+                            }
+                            if ($row['quantity'] <= 100) {
+                                $num_critical++;
+                            }
+                        }
+                        ?>
+                        <?php if ($num_expiring > 0 || $num_expired > 0 || $num_critical > 0) { ?>
+                            <span class="badge rounded-pill" style="background-color: red;">
+                                <?php echo $num_expiring + $num_expired + $num_critical; ?>
+                            </span>
+                        <?php } ?>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="notifications-dropdown">
+                        <?php if ($num_expiring > 0) { ?>
+                            <a class="dropdown-item" href="#">Expiring soon:
+                                <?php echo $num_expiring; ?>
+                            </a>
+                        <?php } ?>
+                        <?php if ($num_expired > 0) { ?>
+                            <a class="dropdown-item" href="#">Expired:
+                                <?php echo $num_expired; ?>
+                            </a>
+                        <?php } ?>
+                        <?php if ($num_critical > 0) { ?>
+                            <a class="dropdown-item" href="#">Critical:
+                                <?php echo $num_critical; ?>
+                            </a>
+                        <?php } ?>
+                    </div>
+                </div>
+
           
          </div>
 
          <div class="card border-0 shadow-sm mb-4">
          <div class="card-body mb-4">
+
+          <form action="chemical_excel.php" method="post">
+                        <button type="submit" name="export_excel" class="btn btn-success btn-sm shadow-none mt-2 text-start me-2">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> Export to excel
+                            </button>
+                        </form>
+
 
                          <div class="text-end my-4">
                             
@@ -64,11 +119,20 @@ adminLogin();
                                 <tr class="text-white" style="background-color:#ED8B5A;">
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
-                         
                                 <th scope="col">Unit</th> 
-                                <th scope="col" >Current Volume</th>
+                                <th scope="col">Current Unit</th>
+                                <th scope="col">Concentration</th>
+                                <th scope="col">Material</th>
                                 <th scope="col" >Date Added</th>
                                 <th scope="col" >Expiration Date</th>
+                                <th scope="col" style="background-color: #ED8B5A;">
+                                    <select id="shelf-filter">
+                                        <option value="all">Overall</option>
+                                        <option value="Shelf 1">Shelf 1</option>
+                                        <option value="Shelf 2">Shelf 2</option>
+                                        <option value="Shelf 3">Shelf 3</option>
+                                    </select>
+                                </th>
                                 <th scope="col">Status</th> 
                                 <th scope="col">Action</th> 
                                 </tr>
@@ -89,6 +153,46 @@ adminLogin();
   
       </main>
 
+      <style>
+        #shelf-filter {
+            border-color: white;
+            border-width: 2px;
+            color: white;
+            background-color: #ED8B5A;
+            font-weight: bold;
+        }
+
+        .dropdown-toggle .badge {
+            background-color: red;
+        }
+
+        #notifications-dropdown {
+            background-color: #ED8B5A;
+            border-color: white;
+        }
+
+        option {
+            font-family: "Open Sans", sans-serif;
+
+        }
+    </style>
+    <script>
+        function filterByShelf() {
+            var filter = document.getElementById("shelf-filter").value;
+            var rows = document.getElementById("chemical_data").getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                var shelf = cells[8].innerText;
+                if (filter === "all" || shelf === filter) {
+                    rows[i].style.display = "table-row";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
+        document.getElementById("shelf-filter").addEventListener("change", filterByShelf);
+    </script>
 
 
    <!----chemical Modal-->
@@ -106,13 +210,20 @@ adminLogin();
                                 <label class="form-label fw-bold">Name of Reagent</label>
                                 <input type="text" name="name" class="form-control shadow-none">
                             </div>
-                            <!--<div class="col-md-2 mb-3">
-                                <label class="form-label fw-bold">Volume</label>
-                                <input type="number" min="1" name="area" class="form-control shadow-none">
-                            </div>-->
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold">Unit</label>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label fw-bold">Current Unit</label>
                                 <input type="number" min="1" name="quantity" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Concentration</label>
+                                <select name="concentration" class="form-select shadow-none">
+                                    <option value="None">None</option>
+                                    <?php
+                                    for ($i = 0; $i <= 100; $i++) {
+                                        echo "<option value='$i%'>$i%</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
                             <div class="col-4 mb-3">
                                 <label class="form-label fw-bold">Unit </label>
@@ -126,13 +237,28 @@ adminLogin();
                                 ?>
                             </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Material</label>
+                                <select name="area" class="form-select shadow-none">
+                                    <option value="0rganic">Organic</option>
+                                    <option value="Inorganic">Inorganic</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Date Added</label>
                                 <input type="date" name="date_added" class="form-control shadow-none">
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Expiration Date</label>
                                 <input type="date" name="date_expiration" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Location</label>
+                                <select name="shelf" class="form-control shadow-none">
+                                    <option value="Shelf 1">Shelf 1</option>
+                                    <option value="Shelf 2">Shelf 2</option>
+                                    <option value="Shelf 3">Shelf 3</option>
+                                </select>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Code ID Chemical</label>
@@ -169,13 +295,20 @@ adminLogin();
                                 <label class="form-label fw-bold">Name of Reagent</label>
                                 <input type="text" name="name" class="form-control shadow-none">
                             </div>
-                            <!--<div class="col-md-2 mb-3">
-                                <label class="form-label fw-bold">Volume</label>
-                                <input type="number" min="1" name="area" class="form-control shadow-none">
-                            </div>-->
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold">Unit</label>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label fw-bold">Current Unit</label>
                                 <input type="number" min="1" name="quantity" class="form-control shadow-none">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Concentration</label>
+                                <select name="concentration" class="form-select shadow-none">
+                                    <option value="None">None</option>
+                                    <?php
+                                    for ($i = 0; $i <= 100; $i++) {
+                                        echo "<option value='$i%'>$i%</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
                             <div class="col-4 mb-3">
                                 <label class="form-label fw-bold">Unit </label>
@@ -189,14 +322,30 @@ adminLogin();
                                 ?>
                             </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Material</label>
+                                <select name="area" class="form-select shadow-none">
+                                    <option value="0rganic">Organic</option>
+                                    <option value="Inorganic">Inorganic</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Date Added</label>
                                 <input type="date" name="date_added" class="form-control shadow-none">
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label fw-bold">Expiration Date</label>
                                 <input type="date" name="date_expiration" class="form-control shadow-none">
                             </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Location</label>
+                                <select name="shelf" class="form-control shadow-none">
+                                    <option value="Shelf 1">Shelf 1</option>
+                                    <option value="Shelf 2">Shelf 2</option>
+                                    <option value="Shelf 3">Shelf 3</option>
+                                </select>
+                            </div>
+                    
                            
                             <input type="hidden" name="chemical_id">
                             </div>
@@ -250,8 +399,10 @@ function add_chemical(){
     let data= new FormData();
         data.append('add_chemical','');
         data.append('name',add_chemical_form.elements['name'].value);
-        // data.append('area',add_chemical_form.elements['area'].value);
-        data.append('quantity',add_chemical_form.elements['quantity'].value);
+        data.append('area',add_chemical_form.elements['area'].value);
+        data.append('shelf', add_chemical_form.elements['shelf'].value);
+         data.append('quantity', add_chemical_form.elements['quantity'].value);
+         data.append('concentration', add_chemical_form.elements['concentration'].value);
         data.append('unit',add_chemical_form.elements['unit'].value);
         data.append('date_added',add_chemical_form.elements['date_added'].value);
         data.append('date_expiration',add_chemical_form.elements['date_expiration'].value);
@@ -273,7 +424,13 @@ function add_chemical(){
         )
         add_chemical_form.reset();
         get_chemical();
-    } else {
+    }else if(this.responseText == 'code_name'){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Code or name already exist',
+        })
+    }else {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -316,9 +473,12 @@ function chemical_details(id){
         
             let data = JSON.parse(this.responseText);
             edit_chemical.elements['name'].value = data.chemicaldata.name;
-            // edit_chemical.elements['area'].value = data.chemicaldata.area;
+            edit_chemical.elements['unit'].value = data.chemicaldata.area;
+            edit_chemical.elements['area'].value = data.chemicaldata.area;
+            edit_chemical.elements['shelf'].value = data.chemicaldata.shelf;
             edit_chemical.elements['unit'].value = data.chemicaldata.unit;
             edit_chemical.elements['quantity'].value = data.chemicaldata.quantity;
+            edit_chemical.elements['concentration'].value = data.chemicaldata.concentration;
             edit_chemical.elements['date_added'].value = data.chemicaldata.date_added;
             edit_chemical.elements['date_expiration'].value = data.chemicaldata.date_exp;
             edit_chemical.elements['chemical_id'].value = data.chemicaldata.id;
@@ -346,11 +506,13 @@ function submit_edit_chemical(){
         data.append('submit_edit_chemical','');
         data.append('chemical_id',edit_chemical.elements['chemical_id'].value);
         data.append('name',edit_chemical.elements['name'].value);
-        // data.append('area',edit_chemical.elements['area'].value);
+        data.append('area',edit_chemical.elements['area'].value);
+        data.append('concentration', edit_chemical.elements['concentration'].value);
         data.append('unit',edit_chemical.elements['unit'].value);
         data.append('quantity',edit_chemical.elements['quantity'].value);
         data.append('date_added',edit_chemical.elements['date_added'].value);
         data.append('date_expiration',edit_chemical.elements['date_expiration'].value);
+        data.append('shelf', edit_chemical.elements['shelf'].value);
 
 
 

@@ -36,7 +36,7 @@ adminLogin();
 
       <main id="main" class="main">
          <div class="pagetitle">
-            <h1>New Requested Borrowing</h1>
+            <h1>New Requested Equipment</h1>
             <nav>
                <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="index.php">Home</a></li>
@@ -55,11 +55,12 @@ adminLogin();
 
 
                            <div class="table-responsive">
-                           <table class="table table-hover border " style="min-width:200px;">
+                           <table class="table table-hover border " style="min-width:500px;">
                             <thead>
                                 <tr class="text-white" style="background-color:#ED8B5A;">
                                 <th scope="col">#</th>
                                 <th scope="col">User Details</th>
+                                <th scope="col">Group Mates</th>
                                 <th scope="col">Item Description</th>
                                 <th scope="col">Time Details</th> 
                                 <th scope="col">Action</th> 
@@ -92,7 +93,6 @@ adminLogin();
                         <div class="modal-body"> 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Approved Return</label>
-                                <input type="hidden" name="equipment_no">
                             </div>
                          <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base ">
                             Note: Are you certain this object is undamaged?
@@ -113,7 +113,7 @@ adminLogin();
 
                <div class="modal fade" id="quantity-equipment" data-bs-backdrop="static" data-bs-keyboard= "true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <form id="quantity_equipment_form">
+                <form id="quantity_equipment_form" novalidate>
                     <div class="modal-content">
                         <div class="modal-header">
                             <div class="modal-title"><i class="bi bi-clipboard-check-fill"></i> Breakage Item</div>
@@ -124,14 +124,19 @@ adminLogin();
                                 <input type="text" name="quantity_no" class="form-control shadow-none">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Group Mate</label>
-                        
-                                <textarea class="form-control shadow-none" name="res_group"   rows="3" style="resize: none;"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Responsible For Breakage</label>
-                        
-                                <textarea class="form-control shadow-none" name="res_breakage"   rows="3" style="resize: none;"></textarea>
+                            <label class="form-label fw-bold">Responsible</label>
+        <input type="email" class="form-control mb-2 shadow-none" list="personnel_list_code" name="res_breakage"  placeholder="Type to search group mate" required multiple pattern=".@">
+        <datalist id="personnel_list_code">
+    <?php
+    $res = $con->query ('SELECT * FROM `user_cred`');
+    while($opt = mysqli_fetch_assoc($res)){
+    ?>
+      <option value="<?php echo $opt['name'].' '. $opt['lname'].' '. $opt['suffix'] ?>"></option>
+    <?php
+    }
+    ?>
+  </datalist>
+      </label>
                             </div>
                          <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base ">
                             Note: Check first the Item Quantity
@@ -216,7 +221,7 @@ function get_bookings_equipment(search=''){
     
         let data = new FormData();
     
-        data.append('equipment_no',assign_equipment_form.elements['equipment_no'].value);
+        // data.append('equipment_no',assign_equipment_form.elements['equipment_no'].value);
         data.append('booking_id',assign_equipment_form.elements['booking_id'].value);
         data.append('assign_equipment','');
     
@@ -265,7 +270,7 @@ function get_bookings_equipment(search=''){
     
         let data = new FormData();
         data.append('quantity_no',quantity_equipment_form.elements['quantity_no'].value);
-        data.append('res_group',quantity_equipment_form.elements['res_group'].value);
+        // data.append('res_group',quantity_equipment_form.elements['res_group'].value);
         data.append('res_breakage',quantity_equipment_form.elements['res_breakage'].value);
         data.append('booking_id',quantity_equipment_form.elements['booking_id'].value);
         data.append('quantity_equipment','');
@@ -289,6 +294,19 @@ function get_bookings_equipment(search=''){
                     )
                     quantity_equipment_form.reset();
                     get_bookings_equipment();
+            }else if(this.responseText == 'same_name'){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'The Name entered in the field does not match any of the group mate.',
+                    })
+            }
+            else if(this.responseText == 'breakage_qty'){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'The breakage quantity does not match the quantity in the equipment details.',
+                    })
             }else{
                 Swal.fire({
                     icon: 'error',

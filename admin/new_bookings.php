@@ -248,7 +248,21 @@ function get_bookings(search=''){
                     )
                     quantity_room_form.reset();
                     get_bookings();
-            }else{
+            }else if(this.responseText == 'same_name'){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'The Name entered in the field does not match any of the group mate.',
+                    })
+            }
+            else if(this.responseText == 'breakage_qty'){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'The breakage quantity does not match the quantity in the apparatus details.',
+                    })
+            }
+            else{
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',

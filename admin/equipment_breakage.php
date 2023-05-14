@@ -62,6 +62,8 @@ adminLogin();
                             <thead>
                                 <tr class="text-white" style="background-color:#ED8B5A;">
                                 <th scope="col">Date</th>
+                                <th scope="col">Responsible</th>
+                                <th scope="col">Subject</th>
                                 <th scope="col">Teacher</th>
                                 <th scope="col">Item Name</th>
                                 <th scope="col">Room Number</th>
@@ -140,7 +142,7 @@ function get_breakage_equipment(search='',page=1){
     
     
     function change_page(page){
-       get_breakage(document.getElementById('search_input').value,page);
+      get_breakage_equipment(document.getElementById('search_input').value,page);
     }
 
     

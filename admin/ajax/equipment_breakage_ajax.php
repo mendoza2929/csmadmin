@@ -18,12 +18,12 @@ if(isset($_POST['get_breakage_equipment'])){
 
 
     
-    $query = "SELECT eo.*, ed.*  FROM `equipment_order_final` eo INNER JOIN `equipment_details_final` ed ON eo.booking_id = ed.booking_id WHERE  (  (eo.booking_status='breakage' AND eo.arrival=0) ) AND   (eo.order_id LIKE ? OR ed.course LIKE ? OR ed.teacher LIKE ? )  ORDER BY eo.booking_id DESC ";
+    $query = "SELECT eo.*, ed.*  FROM `equipment_order_final` eo INNER JOIN `equipment_details_final` ed ON eo.booking_id = ed.booking_id WHERE  (  (eo.booking_status='breakage' AND eo.arrival=0) ) AND   (eo.order_id LIKE ? OR ed.course LIKE ? OR ed.teacher LIKE ? OR ed.res_breakage LIKE ?)  ORDER BY eo.booking_id DESC ";
 
-    $res = select($query,["%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%"],'sss');
+    $res = select($query,["%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%"],'ssss');
 
     $limit_query = $query ." LIMIT $start, $limit";
-    $limit_res =  select($limit_query,["%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%"],'sss');
+    $limit_res =  select($limit_query,["%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%","%$frm_data[search]%"],'ssss');
 
 
 
@@ -67,6 +67,12 @@ if(isset($_POST['get_breakage_equipment'])){
         <tr>
         <td>
         <b> $date
+        </td>
+        <td>
+        $data[res_breakage]
+        </td>
+        <td>
+        $data[lab]
         </td>
             <td>
             $data[teacher]

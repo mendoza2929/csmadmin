@@ -20,12 +20,12 @@ if (isset($_POST['add_rooms'])) {
 
     if ($count > 0) {
         // Room with the same name already exists, display an error message or handle the situation as desired
-        echo "Error: Room with the same name already exists.";
+        echo "exist";
     } else {
-        $q1 = "INSERT INTO `rooms`(`name`, `brand`,`size`,`unit`,`quantity`,`avail`,`date`) VALUES (?,?,?,?,?,?,?)";
-        $values = [$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['avail'],$frm_data['date']];
+        $q1 = "INSERT INTO `rooms`(`name`, `brand`,`size`,`unit`,`quantity`,`avail`,`date`,`shelf`) VALUES (?,?,?,?,?,?,?,?)";
+        $values = [$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['avail'],$frm_data['date'],$frm_data['shelf']];
 
-        if (insert($q1, $values, 'ssisiis')) {
+        if (insert($q1, $values, 'ssisiiss')) {
             $flag = 1;
         }
 
@@ -40,7 +40,7 @@ if (isset($_POST['add_rooms'])) {
 
 
 if(isset($_POST['get_rooms'])){  
-    $res = selectAll('rooms');
+    $res = select("SELECT * FROM `rooms` WHERE `removed`=? ORDER BY `name` ASC, `date` ASC", [0], 'i');
     $i=1;
 
     $data= "";
@@ -73,6 +73,7 @@ if(isset($_POST['get_rooms'])){
                 <td>$quantity_notice</td>
                 <td>$row[avail]</td>
                 <td>$date</td>
+                <td>$row[shelf]</td>
                 <td>$status</td>
                 <td>
                   
@@ -141,10 +142,10 @@ if(isset($_POST['edit_rooms'])){
     $frm_data = filteration($_POST);
     $flag = 0;
 
-    $q1 = "UPDATE `rooms` SET `name`=?,`brand`=?,`size`=?,`unit`=?, `quantity`=? , `avail`=? ,  `date`=? WHERE `id`=?";
-    $values=[$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['avail'],$frm_data['date'],$frm_data['room_id']];
+    $q1 = "UPDATE `rooms` SET `name`=?,`brand`=?,`size`=?,`unit`=?, `quantity`=? , `avail`=? ,  `date`=?,`shelf`=? WHERE `id`=?";
+    $values=[$frm_data['name'],$frm_data['brand'],$frm_data['size'],$frm_data['unit'],$frm_data['quantity'],$frm_data['avail'],$frm_data['date'], $frm_data['shelf'],$frm_data['room_id']];
 
-    if(update($q1,$values,'ssisissi')){
+    if(update($q1,$values,'ssisisssi')){
         $flag =1;
     }
     
@@ -166,8 +167,8 @@ if(isset($_POST['edit_rooms'])){
 
 if(isset($_POST['search_apparatus'])){
     $frm_data = filteration($_POST);
-    $query = "SELECT * FROM  `rooms` WHERE `name` LIKE?";
-    $res = select($query,["%$frm_data[name]%"],'s');
+    $query = "SELECT * FROM rooms WHERE name LIKE ? OR brand LIKE ?";
+    $res = select($query, ["%$frm_data[name]%", "%$frm_data[name]%"], 'ss');
     $i=1;
     $data= "";
     while($row = mysqli_fetch_array($res)){
@@ -194,6 +195,7 @@ if(isset($_POST['search_apparatus'])){
         <td>$row[quantity]</td>
         <td>$row[avail]</td>
         <td>$date</td>
+        <td>$row[shelf]</td>
         <td>$status</td>
         <td>
           

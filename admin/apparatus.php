@@ -49,14 +49,15 @@ adminLogin();
          <div class="card border-0 shadow-sm mb-4">
          <div class="card-body mb-4">
 
-                         <div class="text-end my-4">
-                            
-                            <button type="button" class="btn btn-warning btn-sm shadow-none mb-2" data-bs-toggle="modal" data-bs-target="#add-room">
-                            <i class="bi bi-file-plus"></i> Add
-                            </button>
-                            <input type="text" oninput="search_apparatus(this.value)" class="form-control shadow-none w-25 ms-auto" placeholder="Type to search..">
-                        </div>
+                        <div class="text-end my-4">
 
+                <button type="button" class="btn btn-warning btn-sm shadow-none mb-2" data-bs-toggle="modal"
+                    data-bs-target="#add-room">
+                    <i class="bi bi-file-plus"></i> Add
+                </button>
+                <input type="text" oninput="search_apparatus(this.value)"
+                    class="form-control shadow-none w-25 ms-auto" placeholder="Type to search..">
+                </div>
 
                            <div class="table-responsive-lg" style="height:450px; overflow-y:scroll;">
                            <table class="table table-hover border text-center">
@@ -66,10 +67,18 @@ adminLogin();
                                 <th scope="col">Name</th>
                                 <th scope="col">brand</th>
                                 <th scope="col">size</th> 
-                                <th scope="col" >Unit</th>
+                                <th scope="col">Unit</th>
                                 <th scope="col">Current Stock</th> 
                                 <th scope="col">Availability</th> 
                                 <th scope="col">Date Added</th> 
+                                <th scope="col" style="background-color: #ED8B5A;">
+                                    <select id="shelf-filter">
+                                        <option value="all">Overall</option>
+                                        <option value="Shelf 1">Shelf 1</option>
+                                        <option value="Shelf 2">Shelf 2</option>
+                                        <option value="Shelf 3">Shelf 3</option>
+                                    </select>
+                                </th>
                                 <th scope="col">Status</th> 
                                 <th scope="col">Action</th> 
                                 </tr>
@@ -88,6 +97,40 @@ adminLogin();
       
   
       </main>
+
+      <style>
+        #shelf-filter {
+            border-color: white;
+            border-width: 2px;
+            color: white;
+            background-color: #ED8B5A;
+            font-weight: bold;
+        }
+
+        option {
+            font-family: "Open Sans", sans-serif;
+
+        }
+    </style>
+       <script>
+        function filterByShelf() {
+            var filter = document.getElementById("shelf-filter").value;
+            var rows = document.getElementById("room_data").getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                if (filter === "all") {
+                    rows[i].style.display = "";
+                } else if (cells[8].innerText === filter) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
+        document.getElementById("shelf-filter").addEventListener("change", filterByShelf);
+    </script>
+
 
 
       
@@ -137,6 +180,15 @@ adminLogin();
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-bold">Date Added</label>
                                 <input type="date" name="date" class="form-control shadow-none">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Location</label>
+                                <select name="shelf" class="form-control shadow-none">
+                                    <option value="Shelf 1">Shelf 1</option>
+                                    <option value="Shelf 2">Shelf 2</option>
+                                    <option value="Shelf 3">Shelf 3</option>
+                                </select>
                             </div>
                           
                           
@@ -198,6 +250,15 @@ adminLogin();
                                 <label class="form-label fw-bold">Date Added</label>
                                 <input type="date" name="date" class="form-control shadow-none">
                             </div>  
+
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">Location</label>
+                                <select name="shelf" class="form-control shadow-none">
+                                    <option value="Shelf 1">Shelf 1</option>
+                                    <option value="Shelf 2">Shelf 2</option>
+                                    <option value="Shelf 3">Shelf 3</option>
+                                </select>
+                            </div>
                       
                             <input type="hidden" name="room_id">
                             </div>
@@ -260,6 +321,7 @@ function add_rooms(){
         data.append('quantity',room_form.elements['quantity'].value);
         data.append('avail',room_form.elements['avail'].value);
         data.append('date',room_form.elements['date'].value);
+        data.append('shelf', room_form.elements['shelf'].value);
 
 
         let xhr = new XMLHttpRequest();
@@ -279,6 +341,12 @@ function add_rooms(){
                 room_form.reset();
                 get_rooms();
                 
+            }else if(this.responseText == 'exist' ){
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Apparatus with the same name already exists.',
+                })
             }else{
                 Swal.fire({
                 icon: 'error',
@@ -329,6 +397,7 @@ edit_form.addEventListener('submit', function(e){
            edit_form.elements['quantity'].value = data.roomdata.quantity;
            edit_form.elements['avail'].value = data.roomdata.avail;
            edit_form.elements['date'].value = data.roomdata.date;
+           edit_form.elements['shelf'].value = data.roomdata.shelf;
            edit_form.elements['room_id'].value = data.roomdata.id;
 
         //    edit_form.elements['features'].forEach(el => {
@@ -356,6 +425,7 @@ function submit_edit_rooms(){
         data.append('quantity',edit_form.elements['quantity'].value);
         data.append('avail',edit_form.elements['avail'].value);
         data.append('date',edit_form.elements['date'].value);
+        data.append('shelf', edit_form.elements['shelf'].value);
 
 
 

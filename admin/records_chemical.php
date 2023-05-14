@@ -50,11 +50,11 @@ adminLogin();
          <div class="card-body mb-4">
 
 
-                     <form action="chemical_excel.php" method="post">
+                     <!--<form action="chemical_excel.php" method="post">
                         <button type="submit" name="export_excel" class="btn btn-success btn-sm shadow-none mt-2 mb-2 text-start me-2">
                             <i class="bi bi-file-earmark-spreadsheet"></i> Export to excel
                             </button>
-                        </form>
+                        </form>-->
 
 
                         <div class="text-end mb-4">

@@ -62,7 +62,7 @@ adminLogin();
                             <thead>
                                 <tr class="text-white" style="background-color:#ED8B5A;">
                                 <th scope="col">Date</th>
-                                <th scope="col">Student</th>
+                                <th scope="col">Responsible</th>
                                 <th scope="col">Subject</th>
                                 <th scope="col">Teacher</th>
                                 <th scope="col">Item Name</th>

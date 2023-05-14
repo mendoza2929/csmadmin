@@ -61,7 +61,7 @@ if(isset($_POST['get_booking_chemical'])){
           <td>
           <b>Item: </b> $data[chemical_name]
           <br>
-          <b>Concentration/State: </b> $data[state] percent
+          <b>Concentration/State: </b> $data[state]%
           <br>
           <b>Volume: </b> $data[volume] Needed
           </td>

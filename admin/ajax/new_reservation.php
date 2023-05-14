@@ -192,13 +192,23 @@ if(isset($_POST['quantity_room'])){
   $group_mates = $bd_fetch['group_mate'];
   $group_mate_list = explode(",", $group_mates);
 
-  // Check if the name entered in `res_breakage` field matches one of the group mates in the booking details:
-  if (!in_array($res_breakage, $group_mate_list)) {
-    echo "The Name entered in the  field does not match any of the group mate.";
+// Check if the names entered in `res_breakage` field match the group mates in the booking details:
+  $res_breakages = explode(",", $frm_data['res_breakage']);
+  $validated_names = array();
+  foreach ($res_breakages as $res_breakage) {
+    $res_breakage = trim($res_breakage);
+    if (!empty($res_breakage) && in_array($res_breakage, $group_mate_list)) {
+      $validated_names[] = $res_breakage;
+    } else {
+      echo "same_name";
+      return;
+    }
+  }
+  
+  if (empty($validated_names)) {
+    echo "same_name";
     return;
   }
-
-
   // Get the booking details for the given booking ID:
     $booking_id = $frm_data['booking_id'];
     $select_query = "SELECT `quantity` FROM `booking_details` WHERE `booking_id` = ?";
@@ -209,7 +219,7 @@ if(isset($_POST['quantity_room'])){
   
     // Check if the quantity entered by the user matches the quantity in the booking details:
     if ($breakage_qty > $booking_qty) {
-      echo "The breakage quantity does not match the quantity in the apparatus details.";
+      echo "breakage_qty";
       return;
     }
   
@@ -248,7 +258,7 @@ if(isset($_POST['quantity_room'])){
 
   // Update the `quantity_no` and `res_breakage` fields in the `booking_details` table for the booking that had the breakage:
   $update_query = "UPDATE `booking_details` SET `quantity_no` = ? , `res_breakage` = ?  WHERE `booking_id` = ?";
-  $update_values = [$breakage_qty, $res_breakage, $booking_id];
+  $update_values = [$breakage_qty, implode(",", $validated_names), $booking_id];
   $res = update($update_query, $update_values, 'isi');
 
   // Check if the remaining quantity of the room is zero and update the status of the room in the `rooms` table:

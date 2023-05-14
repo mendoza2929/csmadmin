@@ -53,14 +53,14 @@ adminLogin();
             $count = $result->fetch_array()[0];
             if ($count > 0) {
                 // Code or name already exist, return error
-                echo "error";
+                echo "code_name";
             } else {
                 // Code and name do not exist, insert new record
-                $q2 = "INSERT INTO `chemical`(`name`, `unit`, `quantity`, `date_added`, `date_exp`, `code`) VALUES (?,?,?,?,?,?)";
-                $values = array($frm_data['name'], $frm_data['unit'], $frm_data['quantity'], $frm_data['date_added'], $frm_data['date_expiration'], $frm_data['code']);
+                $q2 = "INSERT INTO `chemical`(`name`, `area`,`unit`,`concentration`, `quantity`, `date_added`, `date_exp`, `shelf`,`code`) VALUES (?,?,?,?,?,?,?,?,?)";
+                $values = array($frm_data['name'], $frm_data['area'], $frm_data['unit'], $frm_data['concentration'], $frm_data['quantity'], $frm_data['date_added'], $frm_data['date_expiration'], $frm_data['shelf'], $frm_data['code']);
         
                 // Insert new record
-                if (insert($q2, $values, 'ssisss')) {
+                if (insert($q2, $values, 'ssssissss')) {
                     // Return success
                     echo "success";
                 } else {
@@ -79,7 +79,7 @@ adminLogin();
 
 
     if(isset($_POST['get_chemical'])){
-        $res = selectAll('chemical');
+        $res = selectAll('chemical ORDER BY name ASC, date_added ASC');
         $i=1;
     
         $data = "";
@@ -131,11 +131,13 @@ adminLogin();
                 <td> <span class='badge bg-info'>
                 Chemical ID: $row[code]
                 </span> <br> $row[name] <br> $expiration_notice</td>
-    
+                <td> $quantity_notice </td>
                 <td><span class='badge rounded-pill bg-light text-dark'>$row[unit]</span></td>
-                <td>$quantity_notice</td>
+                <td>$row[concentration]% </td>
+                <td>$row[area] </td>
                 <td>$date_added</td>
                 <td>$date_exp</td>
+                <td>$row[shelf] </td>
                 <td>$status</td>
                 <td>
                     <button type='button' onclick='chemical_details($row[id])' class='btn btn-warning btn-sm shadow-none me-3' data-bs-toggle='modal' data-bs-target='#edit-chemical'>
@@ -183,10 +185,10 @@ if(isset($_POST['submit_edit_chemical'])){
 
     $flag = 0;
 
-    $q1 = "UPDATE `chemical` SET `name`=?, `unit`=?, `quantity`=?, `date_added`=?,`date_exp`=? WHERE `id`=?";
-    $values = [$frm_data['name'],$frm_data['unit'],$frm_data['quantity'],$frm_data['date_added'],$frm_data['date_expiration'],$frm_data['chemical_id']];
+    $q1 = "UPDATE `chemical` SET `name`=?, `area`=?, `concentration`=?, `unit`=?, `quantity`=?, `date_added`=?,`date_exp`=?,`shelf`=? WHERE `id`=?";
+    $values = [$frm_data['name'],$frm_data['area'],$frm_data['concentration'],$frm_data['unit'],$frm_data['quantity'],$frm_data['date_added'],$frm_data['date_expiration'],$frm_data['shelf'],$frm_data['chemical_id']];
 
-    if(update($q1,$values,'ssissi')){
+    if(update($q1,$values,'ssssisssi')){
         $flag =1;
     }
     
@@ -218,39 +220,70 @@ if(isset($_POST['toggleStatus'])){
 
 }
 
-if(isset($_POST['search_chemical'])){
+if (isset($_POST['search_chemical'])) {
     $frm_data = filteration($_POST);
-    $query = "SELECT * FROM  `chemical` WHERE `name` LIKE?";
-    $res = select($query,["%$frm_data[name]%"],'s');
-    $i=1;
-    $data= "";
-    while($row = mysqli_fetch_array($res)){
+    $query = "SELECT * FROM  `chemical` WHERE `name` LIKE? OR `unit` LIKE ? OR `area` LIKE ?";
 
-        $date_added = date('F j Y',strtotime($row['date_added']));
-        $date_exp = date('F j Y',strtotime($row['date_exp']));
-        if($row['status']==1){
-       
-            $status = "<button  onclick='toggleStatus($row[id],0)'class='btn btn-success btn-sm shadow-none'>Active</button>";
-    
-    }else{
-    
-        $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
-    
+    // If the search query is for expired chemicals, modify the query accordingly
+    if ($frm_data['name'] == 'Expired') {
+        $query .= " AND `date_exp` < NOW()";
+    } else {
+        $query .= " AND `date_exp` >= NOW()";
     }
 
+    $res = select($query, ["%$frm_data[name]%", "%$frm_data[name]%", "%$frm_data[name]%"], 'sss');
+    $i = 1;
+    $data = "";
+    while ($row = mysqli_fetch_array($res)) {
 
-        $data.= "
+        $date_added = date('F j Y', strtotime($row['date_added']));
+        $date_exp = date('F j Y', strtotime($row['date_exp']));
+        // Get the current date
+        $current_date = strtotime(date('Y-m-d'));
+        // Get the expiration date
+        $expiration_date = strtotime($row['date_exp']);
+        // Calculate the difference between the current date and the expiration date in days
+        $days_diff = ($expiration_date - $current_date) / 86400; //86400 seconds in a day
+        // Check if the quantity is less than or equal to 100 units
+        if ($row['quantity'] <= 100) {
+            $quantity_notice = "<span class='badge rounded-pill bg-danger'>Critical!</span>";
+        } else {
+            $quantity_notice = "";
+        }
+        // Check if the expiration date has already passed
+        if ($expiration_date < $current_date) {
+            $expiration_notice = "<span class='badge rounded-pill bg-danger'>Expired!</span>";
+        }
+        // Check if the expiration date is within one month
+        else if ($days_diff < 60) {
+            $expiration_notice = "<span class='badge rounded-pill bg-warning'>Expiring soon!</span>";
+        }
+        // If the expiration date is not close, set the notice to an empty string
+        else {
+            $expiration_notice = "";
+        }
+
+        if ($row['status'] == 1) {
+            $status = "<button  onclick='toggleStatus($row[id],0)'class='btn btn-success btn-sm shadow-none'>Active</button>";
+        } else {
+            $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
+        }
+
+
+        $data .= "
         <tr class='align-middle'>
         <td>$i</td>
     
         <td> <span class='badge bg-info'>
-        Chemical ID: $row[code]
-        </span> <br> $row[name]</td>
-      
-        <td><span class='badge rounded-pill bg-light text-dark'>$row[unit]</span></td>
-        <td>$row[quantity] </td>
+            Chemical ID: $row[code]
+            </span> <br> $row[name] <br> $expiration_notice</td>
+            <td><span class='badge rounded-pill bg-light text-dark'>$row[unit]</span></td>
+            <td>$row[quantity]<br> $quantity_notice </td>
+        <td>$row[concentration] </td>
+        <td>$row[area] </td>
         <td>$date_added</td>
         <td>$date_exp</td>
+        <td>$row[shelf] </td>
         <td>$status</td>
         <td>
          
@@ -267,9 +300,9 @@ if(isset($_POST['search_chemical'])){
         $i++;
 
         //  <button type='button' onclick='remove_room($row[id])' class='btn btn-danger btn-sm shadow-none'>
- 
-}
-echo $data;
+
+    }
+    echo $data;
 }
 
 

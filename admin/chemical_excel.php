@@ -20,7 +20,7 @@ echo "<table>
         <tbody>";
 
 
-        $res = mysqli_query($con, "SELECT co.*, cd.* FROM `chemical_order_final` co INNER JOIN `chemical_details_final` cd ON co.booking_id = cd.booking_id WHERE  ( (co.booking_status ='approved'  AND co.arrival=1) OR (co.booking_status='breakage' AND co.arrival=0) OR (co.booking_status='payment failed'))  ORDER BY co.booking_id DESC ");
+         $res = selectAll('chemical ORDER BY name ASC, date_added ASC');
 
         if (!$res) {
             // handle query error
@@ -28,73 +28,69 @@ echo "<table>
             exit;
         }
 
-while($data = mysqli_fetch_array($res)){
-
-    $date = date("F j Y",strtotime($data['datentime']));
-      
-    $checkin= date("F j Y g:i a",strtotime($data['check_in']));
-                
-    $checkout= date("F j Y g:i a",strtotime($data['check_out']));
-
-
-
-      if($data['booking_status']=='approved'){
-        $status_bg = 'bg-success';
-      }else if($data['booking_status']=='breakage'){
-        $status_bg = 'bg-danger';
-      }else{
-        $status_bg = 'bg-warning text-dark';
-      }
-
+ while($row = mysqli_fetch_assoc($res)){
+            $date_added = date('F j Y',strtotime($row['date_added']));
+            $date_exp = date('F j Y',strtotime($row['date_exp']));
+    
+            // Get the current date
+            $current_date = strtotime(date('Y-m-d'));
+    
+            // Get the expiration date
+            $expiration_date = strtotime($row['date_exp']);
+    
+            // Calculate the difference between the current date and the expiration date in days
+            $days_diff = ($expiration_date - $current_date) / 86400; //86400 seconds in a day
+    
+            // Check if the expiration date has already passed
+            if ($expiration_date < $current_date) {
+                $expiration_notice = "<span class='badge rounded-pill bg-danger'>Expired!</span>";
+            }
+            // Check if the expiration date is within one month
+            else if ($days_diff < 60) {
+                $expiration_notice = "<span class='badge rounded-pill bg-warning'>Expiring soon!</span>";
+            }
+            // If the expiration date is not close, set the notice to an empty string
+            else {
+                $expiration_notice = "";
+            }
+    
+            // Check if the chemical is out of stock
+            if ($row['quantity'] == 0) {
+                $quantity_notice = "<span class='badge rounded-pill bg-danger'>Out of Stock</span>";
+                $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
+            }
+            else {
+                $quantity_notice = $row['quantity'];
+                if($row['status']==1){
+                    $status = "<button  onclick='toggleStatus($row[id],0)'class='btn btn-success btn-sm shadow-none'>Active</button>";
+                } else {
+                    $status = "<button onclick='toggleStatus($row[id],1)' class='btn btn-danger btn-sm shadow-none'>Not active</button>";
+                }
+            }
 
 
 
       echo "
-      <tr>
-      <td>
-      <span class='badge bg-primary'>
-          Student ID: $data[email]
-      </span>
-      <br>
-      <b>Name: </b> $data[username]
-      <br>
-      <b>Course: </b> $data[course]
-      <br>
-      <b>Year: </b> $data[year] year
+      <tr class='align-middle'>
+                
     
-      <br>
-      <b>Teacher Name: </b> $data[teacher]
-      <br>
-      <b>Group No. : </b>  $data[group_no] 
-      <br>
-      <b>Room No. : </b>  $data[apr_no] 
-      </td>
-      <td>
-      <b>item: </b> $data[chemical_name]
-      <br>
-      <b>Quantity: </b> $data[quantity]
-      <br>
-      <b>Remarks: </b> $data[quantity_no] pcs
-      
-      <br>
-      <b>Volume : </b>  $data[volume] Needed
-      <br>
-    
-      </td>
-      <td>
-      <b>Start Date: </b> $checkin
-      <br>
-      <b>End Date: </b> $checkout
-      <br>
-      <b>Date: </b> $date
-      </td>
-      <td>
-      <span class='badge $status_bg' >$data[booking_status]</span>
-      </td>
-      <td>
-     
-      </td>
-  </tr>";
+                <td> <span class='badge bg-info'>
+                Chemical ID: $row[code]
+                </span> <br> $row[name] <br> $expiration_notice</td>
+                <td><span class='badge rounded-pill bg-light text-dark'>$row[unit]</span></td>
+                <td> $quantity_notice </td>
+                <td>$row[concentration] </td>
+                <td>$row[area] </td>
+                <td>$date_added</td>
+                <td>$date_exp</td>
+                <td>$row[shelf] </td>
+                <td>$status</td>
+                <td>
+                    <button type='button' onclick='chemical_details($row[id])' class='btn btn-warning btn-sm shadow-none me-3' data-bs-toggle='modal' data-bs-target='#edit-chemical'>
+                    <i class='i bi-pencil-square'></i>
+                    </button>
+                </td>
+            </tr>";
       
 
 

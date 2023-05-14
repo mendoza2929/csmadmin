@@ -49,11 +49,11 @@ adminLogin();
          <div class="card border-0 shadow-sm mb-4">
          <div class="card-body mb-4">
 
-                         <form action="excel.php" method="post">
+                         <!--<form action="excel.php" method="post">
                         <button type="submit" name="export_excel" class="btn btn-success btn-sm shadow-none mt-2 mb-2 text-start me-2">
                             <i class="bi bi-file-earmark-spreadsheet"></i> Export to excel
                             </button>
-                        </form>
+                        </form>-->
 
                         <div class="text-end my-4">
                            <input type="text"  id="search_input" oninput="get_bookings(this.value)" class="form-control shadow-none w-25 ms-auto" placeholder="Type to search..">

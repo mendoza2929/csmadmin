@@ -49,7 +49,6 @@ if(isset($_POST['get_equipment'])){
             <br>
             <b>Teacher: </b> $data[teacher]
             </td>
-        
             <td>
                 <b>Item: </b> $data[equipment_name]
                 <br>
@@ -62,7 +61,7 @@ if(isset($_POST['get_equipment'])){
                 <b>Date: </b> $date
             </td>
             <td>
-            <b>$data[res_group]</b>
+            <b>$data[group_mate]</b>
             </td>
             <td>
             <b>$data[res_breakage]</b>
@@ -74,7 +73,7 @@ if(isset($_POST['get_equipment'])){
         
 
             <button type='button' onclick='refund_booking_equipment($data[booking_id])' class='btn mt-2 btn-outline-success  btn-sm fw-bold shadow-none'>
-            <i class='bi bi-cash'></i> Already Complied
+           Completed
           </button>
             </td>
         </tr>
@@ -173,20 +172,19 @@ $update_values = [$breakage_qty, $room_id];
 $res = update($update_query, $update_values, 'ii');
 
 // Check if the remaining quantity of the room is zero and update the status of the room in the `rooms` table:
-$select_query = "SELECT `quantity` FROM `equipment` WHERE `id` = ?";
-$select_values = [$room_id];
-$rq_result = select($select_query, $select_values, 'i');
-$rq_fetch = mysqli_fetch_assoc($rq_result);
+  $select_query = "SELECT `quantity` FROM `equipment` WHERE `id` = ?";
+  $select_values = [$room_id];
+  $rq_result = select($select_query, $select_values, 'i');
+  $rq_fetch = mysqli_fetch_assoc($rq_result);
+  $avail = $rq_fetch['quantity'];
 
-if ($rq_fetch['quantity'] == 1) {
-  $update_query = "UPDATE `equipment` SET `status` = 'available' WHERE `id` = ?";
-  $update_values = [$room_id];
-  $res = update($update_query, $update_values, 'i');
-}
+$update_query = "UPDATE `equipment` SET `avail` = ? WHERE `id` = ?";
+$update_values = [$avail, $room_id];
+$res = update($update_query, $update_values, 'ii');
+
 
 // Update the booking status and refund in the `booking_order` table:
 $query = "UPDATE `equipment_order_final` SET `refund`=? WHERE `booking_id`=? ";
-
 $values = [1 ,$booking_id];
 $res = update($query, $values, 'ii');
 echo $res;
